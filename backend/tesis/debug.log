@@ -1,0 +1,5 @@
+2026-03-27 16:16:58,037 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-03-27 16:17:06,182 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-03-27 16:17:14,269 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-03-27 16:17:35,561 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-03-27 16:18:05,407 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
