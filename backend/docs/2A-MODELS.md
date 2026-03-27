@@ -23,14 +23,16 @@ Implementar los modelos de dominio y restricciones de integridad definidos en el
 
 ### Fase 2: Dominio base
 
-- [ ] Crear `Entity` con `code` unico.
+- [ ] Crear `Entity` con `code` unico e `is_consolidated` para la entidad agregada.
 - [ ] Crear `Period` con constraint `(year, month, period_type)`.
 
 ### Fase 3: Presupuestos e indicadores
 
 - [ ] Crear `Budget` con constraint `(entity, period)`.
 - [ ] Crear `BudgetItem` con constraint compuesto por presupuesto, tipo y codigo.
-- [ ] Crear `Indicator` y `IndicatorVariable` con constraint `(indicator, name)`.
+- [ ] Crear `IndicatorGroup` (fundamental, limite, otro) con campo `order`.
+- [ ] Crear `Indicator` con `unit` (MP, U, p, peso, Coef), FK a `IndicatorGroup` y constraint `(indicator, name)`.
+- [ ] Crear `IndicatorVariable` con `label` y constraint `(indicator, name)`. Variables estandar: plan_anual, ano_anterior, plan_acumulado, real_acumulado, porcentaje_r_p, real_aa, estimado_prox_mes, estimado_cierre_ano.
 - [ ] Crear `IndicatorRecord` con constraint `(entity, indicator, period, variable_name)`.
 
 ### Fase 4: Ingesta y calculos

@@ -79,7 +79,8 @@ backend/tesis/
 | id | AutoField |
 | code | CharField(20), único |
 | name | CharField(200) |
-| type | CharField(50) | unidad presupuestada, etc. |
+| type | CharField(50) | unidad presupuestada, empresa, mipyme, etc. |
+| is_consolidated | BooleanField | True para la entidad agregada (Consolidado Municipal) |
 | is_active | BooleanField |
 | created_at | DateTimeField |
 | updated_at | DateTimeField |
@@ -123,31 +124,56 @@ backend/tesis/
 
 Único compuesto: (budget, item_type, economic_classification, code)
 
-### 3.10 indicators
+### 3.10 indicator_groups
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
-| code | CharField(20), único |
-| name | CharField(200) |
-| indicator_type | CharField(30) | ingreso, gasto, productividad, salario |
+| code | CharField(30), único | fundamental, limite, otro |
+| name | CharField(100) | Indicadores Fundamentales, Indicadores Límites, Otros Indicadores |
+| order | PositiveIntegerField | orden de presentación |
+| created_at | DateTimeField |
+
+### 3.11 indicators
+| Campo | Tipo |
+|-------|------|
+| id | AutoField |
+| code | CharField(20), único | generado a partir del nombre (slug) |
+| name | CharField(200) | nombre exacto del Excel (ej: "Ventas Totales") |
+| group | FK → indicator_groups | fundamental, limite u otro |
+| indicator_type | CharField(30) | ingreso, gasto, productividad, salario, ratio |
+| unit | CharField(10) | MP=miles de pesos, U=unidades, p=pesos, Coef=coeficiente, peso=ratio |
 | description | TextField | opcional |
 | calculation_method | CharField(50) | acumulado, correlacion, estimado, ninguno |
 | is_active | BooleanField |
 | created_at | DateTimeField |
 
-### 3.11 indicator_variables
-| Campo | Tipo |
-|-------|------|
-| id | AutoField |
-| indicator | FK → indicators |
-| name | CharField(100) |
-| data_type | CharField(20) | decimal, integer, percentage |
-| source_field | CharField(100) | nombre del campo en budget_item |
-| is_required | BooleanField |
+### 3.12 indicator_variables
+| Campo | Tipo | Notas |
+|-------|------|-------|
+| id | AutoField | |
+| indicator | FK → indicators | |
+| name | CharField(100) | nombre técnico de la variable |
+| label | CharField(150) | etiqueta legible (ej: "Plan Año") |
+| data_type | CharField(20) | decimal, integer, percentage, coefficient |
+| source_field | CharField(100) | nombre del campo en budget_item (si aplica) |
+| is_required | BooleanField | |
 
 Único compuesto: (indicator, name)
 
-### 3.12 indicator_records
+**Variables estándar por indicador** (derivadas de las columnas del Excel):
+
+| name | label | descripción |
+|------|-------|-------------|
+| `plan_anual` | PLAN AÑO | plan anual del indicador |
+| `ano_anterior` | Año Anter. igual per. | valor del año anterior mismo período |
+| `plan_acumulado` | PLAN acumulado | plan acumulado a la fecha |
+| `real_acumulado` | REAL acumulado | valor real acumulado |
+| `porcentaje_r_p` | % R/P | cumplimiento real/plan (real ÷ plan × 100) |
+| `real_aa` | R/AA | real respecto al año anterior (real ÷ año_ant × 100) |
+| `estimado_prox_mes` | Estimado próximo mes | proyección para el siguiente mes |
+| `estimado_cierre_ano` | Estimado cierre/año | proyección de cierre anual |
+
+### 3.13 indicator_records
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -164,7 +190,7 @@ backend/tesis/
 
 Único compuesto: (entity, indicator, period, variable_name)
 
-### 3.13 calculations
+### 3.14 calculations
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -178,7 +204,7 @@ backend/tesis/
 | completed_at | DateTimeField | nullable |
 | created_at | DateTimeField |
 
-### 3.14 calculation_results
+### 3.15 calculation_results
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -190,7 +216,7 @@ backend/tesis/
 
 Único compuesto: (calculation, indicator, variable_name)
 
-### 3.15 documents
+### 3.16 documents
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -201,7 +227,7 @@ backend/tesis/
 | uploaded_by | FK → users |
 | uploaded_at | DateTimeField |
 
-### 3.16 import_jobs
+### 3.17 import_jobs
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -218,7 +244,7 @@ backend/tesis/
 | completed_at | DateTimeField | nullable |
 | created_at | DateTimeField |
 
-### 3.17 document_details (staging — pre-migración)
+### 3.18 document_details (staging — pre-migración)
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -234,7 +260,7 @@ backend/tesis/
 | is_valid | BooleanField |
 | validation_error | TextField | nullable |
 
-### 3.18 entity_classifications
+### 3.19 entity_classifications
 | Campo | Tipo |
 |-------|------|
 | id | AutoField |
@@ -248,7 +274,81 @@ backend/tesis/
 
 Único compuesto: (entity, period, classification_type)
 
-## 4. Plan por Iteraciones
+## 4. Estructura del Excel fuente (Indicadores 2025.xls)
+
+El archivo fuente principal es `Indicadores 2025.xls` (formato Excel 97-2003, requiere `xlrd`).
+
+### 4.1 Organización por hojas
+
+Cada hoja representa una entidad económica del municipio:
+
+| Hoja | Entidad | Tipo |
+|------|---------|------|
+| Consolidado Municipal | Alquízar (agregado) | consolidado |
+| Emp.Agropecuaria | Empresa Agropecuaria | empresa |
+| Empresa Alquitex | Empresa Alquitex | empresa |
+| Empresa de Comercio | Empresa de Comercio | empresa |
+| MIPYME ESTATAL | MIPYME Estatal | mipyme |
+| IaGROP | IaGROP | mipyme |
+
+### 4.2 Columnas por hoja
+
+| Col índice | Encabezado | Campo destino |
+|------------|------------|---------------|
+| 0 | INDICADORES | `indicator.name` |
+| 1 | U:M | `indicator.unit` |
+| 2 | AÑO | `variable_name = plan_anual` |
+| 3 | Año Anter. igual per. | `variable_name = ano_anterior` |
+| 4 | PLAN | `variable_name = plan_acumulado` |
+| 5 | REAL | `variable_name = real_acumulado` |
+| 6 | % (R/P) | `variable_name = porcentaje_r_p` |
+| 7 | R/AA | `variable_name = real_aa` |
+| 8 | Estimado próximo mes | `variable_name = estimado_prox_mes` |
+| 9 | Estimado cierre/año | `variable_name = estimado_cierre_ano` |
+
+> Nota: La hoja "Consolidado Municipal" tiene una columna adicional (col 10) con un segundo estimado de cierre.
+
+### 4.3 Indicadores por grupo
+
+**Fundamentales** (filas de datos 1-4):
+- Ventas Totales
+- Total de Ingresos
+- Total de Gastos
+- Utilidad o Pérdida
+
+**Límites** (fila siguiente a "Indicadores Limites"):
+- Gasto de Salario x peso V.A.B
+
+**Otros** (después de "Otros Indicadores"):
+- Gasto Total x peso de Ing.Total
+- Valor Agregado Bruto
+- Utilidad Antes del Imp. x $ de VAB
+- Fondo de Salario Total
+- Promedio de Trabajadores
+- Productividad del Trabajo
+- Salario Medio
+- Correlación Salario Medio/Product.
+
+### 4.4 Reglas del parser
+
+1. Las primeras 5-7 filas de cada hoja son cabeceras/metadata y deben ignorarse.
+2. Filas con texto de sección ("Indicadores Limites", "Otros Indicadores") son separadores, no datos.
+3. Filas vacías o con solo la celda de firma ("Aprobado:", nombre de directora) son pie de página.
+4. El valor numérico `45992.0` en las filas superiores es un código interno del Excel, no un dato de indicador.
+5. Cada fila de indicador válido genera hasta 8 `document_details` (uno por variable/columna con valor no vacío).
+6. Los valores vacíos o texto no numérico en columnas de datos deben marcarse como `is_valid=False` en staging.
+
+### 4.5 Mapeo de unidades
+
+| Código Excel | Significado | Ejemplo |
+|-------------|-------------|---------|
+| MP | Miles de pesos | Ventas Totales, Ingresos, Gastos |
+| U | Unidades | Promedio Trabajadores, VAB |
+| p | Pesos | Productividad, Salario Medio |
+| peso | Ratio/pesos por peso | Gasto x peso de ingreso |
+| Coef | Coeficiente de correlación | Correlación Salario/Productividad |
+
+## 5. Plan por Iteraciones
 
 ### Iteración 1 — 2 semanas (HU1–HU5, RNF1–RNF2)
 
@@ -270,13 +370,13 @@ backend/tesis/
 
 **Objetivo**: Pipeline de importación, cálculo de indicadores y exportación.
 
-- [ ] **catalog**: `Entity`, `Period`
+- [ ] **catalog**: `Entity` (con `is_consolidated`), `Period`
 - [ ] **budget**: `Budget`, `BudgetItem`
-- [ ] **indicators**: `Indicator`, `IndicatorVariable`, `IndicatorRecord`
+- [ ] **indicators**: `IndicatorGroup`, `Indicator` (con `unit` y `group` FK), `IndicatorVariable`, `IndicatorRecord`
 - [ ] `Document`, `ImportJob`, `DocumentDetail`
-- [ ] Endpoint `POST /api/documents/upload` — guarda archivo xlsx
-- [ ] Servicio de parsing: lee xlsx con openpyxl/pandas, inserta en `document_details`
-- [ ] Servicio de estandarización: normaliza nombres de entidades, periodos, indicadores
+- [ ] Endpoint `POST /api/documents/upload` — guarda archivo xlsx/xls
+- [ ] Servicio de parsing: lee xlsx con openpyxl o xls con xlrd; cada hoja = una entidad; filas de cabecera se saltan (5-7 primeras); cada fila de indicador genera N `document_details` (uno por variable/columna: plan_anual, ano_anterior, real_acumulado, etc.)
+- [ ] Servicio de estandarización: normaliza nombres de entidades (mapeo hoja→Entity.code), periodos, indicadores (nombre→Indicator.code)
 - [ ] Endpoint `POST /api/import-jobs/{id}/validate` — corre validación, marca filas válidas/inválidas
 - [ ] Endpoint `POST /api/import-jobs/{id}/migrate` — migra filas válidas a `indicator_records` en transacción
 - [ ] Endpoint `GET /api/indicator-records` con filtros por entity, indicator, period
@@ -303,7 +403,7 @@ backend/tesis/
 - [ ] Endpoint `GET /api/classifications` — lista con filtros
 - [ ] Tests de reportes y clasificación
 
-## 5. API REST — Endpoints
+## 6. API REST — Endpoints
 
 ### Auth
 | Método | Endpoint | Descripción |
@@ -357,10 +457,17 @@ backend/tesis/
 | POST | `/api/budget-items/` | Crear |
 | GET/PATCH/DELETE | `/api/budget-items/{id}/` | CRUD |
 
+### Indicator Groups
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/indicator-groups/` | Lista de grupos (fundamental, limite, otro) |
+| POST | `/api/indicator-groups/` | Crear |
+| GET/PATCH/DELETE | `/api/indicator-groups/{id}/` | CRUD |
+
 ### Indicators
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/api/indicators/` | Lista |
+| GET | `/api/indicators/` | Lista (filtrable por group) |
 | POST | `/api/indicators/` | Crear |
 | GET/PATCH/DELETE | `/api/indicators/{id}/` | CRUD |
 
@@ -426,17 +533,18 @@ backend/tesis/
 | POST | `/api/classifications/calculate/` | Recalcular |
 | GET | `/api/classifications/{id}/` | Detalle |
 
-## 6. Dependencias
+## 7. Dependencias
 
 ```bash
 pip install Django==6.0.3 djangorestframework==3.17.0
 pip install djangorestframework-simplejwt  # JWT
 pip install openpyxl                      # Leer/escribir xlsx
+pip install xlrd                          # Leer xls (formato legacy de Indicadores 2025.xls)
 pip install pandas                         # Preprocesamiento de datos (opcional en venv)
 pip install black isort flake8 pytest-django  # Lint/test
 ```
 
-## 7. Estrategia de Pruebas
+## 8. Estrategia de Pruebas
 
 ### Unit tests
 - `accounts`: validación de login, bloqueo de IP, creación de usuario
@@ -476,7 +584,7 @@ python manage.py test -v 2
 python manage.py test --keepdb
 ```
 
-## 8. Riesgos y Mitigaciones
+## 9. Riesgos y Mitigaciones
 
 | Riesgo | Impacto | Mitigación |
 |--------|---------|------------|
@@ -486,3 +594,6 @@ python manage.py test --keepdb
 | Pérdida de trazabilidad de datos | Auditoría difícil | Campo `data_origin` + FK a `document`/`import_job` en todos los records |
 | Crecimiento de datos (RNF4) | Degradación de rendimiento | Índices en FK + campos de filtro, paginación desde inicio |
 | Credenciales hardcodeadas | Seguridad | Nunca commitear secrets; usar variables de entorno |
+| Estructura irregular del Excel | Parser falla o importa datos basura | Validar cabeceras por hoja antes de parsear; skip de filas de separador y firma; pruebas con archivo real |
+| Hojas con columnas variables | Columnas faltantes o extra | Consolidado Municipal tiene 11 cols vs 10 del resto; parser debe detectar ncols por hoja |
+| Nombres de entidad no normalizados | Entidad no encontrada en catálogo | Mapeo explícito nombre_hoja → Entity.code; configuración mantenible |

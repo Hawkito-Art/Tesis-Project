@@ -12,6 +12,7 @@ Implementar presupuestos y partidas para soportar calculos e indicadores economi
 ## Entradas
 
 - Modelos `Budget` y `BudgetItem`.
+- Los indicadores del Excel (Ventas, Ingresos, Gastos, Utilidad) se calculan parcialmente a partir de datos presupuestarios.
 
 ## Pasos
 
