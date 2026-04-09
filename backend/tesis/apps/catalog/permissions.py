@@ -1,6 +1,6 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from tesis.permissions import IsAdmin, IsAdminOrAnalyst, ReadOnly
+from tesis.permissions import has_role
 
 
 class CatalogPermission(BasePermission):
@@ -12,8 +12,7 @@ class CatalogPermission(BasePermission):
     def has_permission(self, request, view):
         if not request.user or not request.user.is_authenticated:
             return False
-        from tesis.permissions import has_role
 
-        if request.method in ('GET', 'HEAD', 'OPTIONS'):
-            return has_role(request.user, 'admin', 'analyst', 'operator')
-        return has_role(request.user, 'admin')
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_staff or has_role(request.user, 'admin')

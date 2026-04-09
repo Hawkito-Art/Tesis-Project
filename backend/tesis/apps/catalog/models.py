@@ -2,8 +2,21 @@ from django.db import models
 
 
 class Entity(models.Model):
+    TYPE_CONSOLIDADO = 'consolidado'
+    TYPE_EMPRESA = 'empresa'
+    TYPE_MIPYME = 'mipyme'
+    TYPE_UNIDAD_PRESUPUESTADA = 'unidad_presupuestada'
+
+    TYPE_CHOICES = [
+        (TYPE_CONSOLIDADO, 'Consolidado'),
+        (TYPE_EMPRESA, 'Empresa'),
+        (TYPE_MIPYME, 'Mipyme'),
+        (TYPE_UNIDAD_PRESUPUESTADA, 'Unidad presupuestada'),
+    ]
+
     code = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255)
+    type = models.CharField(max_length=40, choices=TYPE_CHOICES, default=TYPE_EMPRESA)
     description = models.TextField(blank=True)
     is_consolidated = models.BooleanField(
         default=False,
@@ -16,6 +29,12 @@ class Entity(models.Model):
     class Meta:
         verbose_name = 'entidad'
         verbose_name_plural = 'entidades'
+        indexes = [
+            models.Index(fields=['code'], name='idx_entity_code'),
+            models.Index(fields=['name'], name='idx_entity_name'),
+            models.Index(fields=['type'], name='idx_entity_type'),
+            models.Index(fields=['is_consolidated'], name='idx_entity_consolidated'),
+        ]
 
     def __str__(self):
         return f'{self.code} - {self.name}'

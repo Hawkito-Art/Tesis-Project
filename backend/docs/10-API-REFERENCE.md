@@ -45,6 +45,27 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - `GET/POST /api/periods/`
 - `GET/PATCH /api/periods/{id}/`
 
+#### Status codes esperados (Catalog)
+
+- `200 OK`: lecturas (`list/retrieve`) y `PATCH` exitoso.
+- `201 Created`: creacion exitosa de `Entity` o `Period`.
+- `204 No Content`: eliminacion exitosa de `Entity`.
+- `400 Bad Request`: payload invalido o violacion de constraints de negocio.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin privilegios de escritura (solo admin escribe).
+
+#### Filtros, orden y paginacion (Catalog)
+
+- `GET /api/entities/`
+  - filtros: `code`, `name`, `type`, `is_consolidated`, `is_active`
+  - busqueda: `search` sobre `code` y `name`
+  - orden: `ordering` en `id`, `code`, `name`, `type`, `created_at`, `updated_at`
+  - paginacion: `page` (PageNumberPagination global)
+- `GET /api/periods/`
+  - filtros: `year`, `month`, `period_type`, `is_active`
+  - orden: `ordering` en `id`, `year`, `month`, `period_type`, `created_at`
+  - paginacion: `page` (PageNumberPagination global)
+
 ### Budget
 
 - `GET/POST /api/budgets/`

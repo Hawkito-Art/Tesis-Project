@@ -1,8 +1,9 @@
-from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from apps.catalog.views import EntityViewSet, PeriodViewSet
 
 
 @api_view()
@@ -15,6 +16,28 @@ urlpatterns = [
     path("api/", api_root, name="api-root"),
     path("api/auth/", include("apps.accounts.urls")),
     path("api/catalog/", include("apps.catalog.urls")),
+    path(
+        "api/entities/",
+        EntityViewSet.as_view({"get": "list", "post": "create"}),
+        name="entities-list",
+    ),
+    path(
+        "api/entities/<int:pk>/",
+        EntityViewSet.as_view(
+            {"get": "retrieve", "patch": "partial_update", "delete": "destroy"}
+        ),
+        name="entities-detail",
+    ),
+    path(
+        "api/periods/",
+        PeriodViewSet.as_view({"get": "list", "post": "create"}),
+        name="periods-list",
+    ),
+    path(
+        "api/periods/<int:pk>/",
+        PeriodViewSet.as_view({"get": "retrieve", "patch": "partial_update"}),
+        name="periods-detail",
+    ),
     path("api/budget/", include("apps.budget.urls")),
     path("api/indicators/", include("apps.indicators.urls")),
     path("api/ingestion/", include("apps.ingestion.urls")),
