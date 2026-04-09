@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from apps.accounts.serializers import UserCreateSerializer
+from apps.accounts.serializers import LoginSerializer, UserCreateSerializer
 from apps.catalog.serializers import PeriodSerializer
 from apps.budget.serializers import BudgetItemSerializer
 from apps.indicators.serializers import IndicatorRecordSerializer
@@ -23,6 +23,21 @@ class UserCreateSerializerTest(TestCase):
     def test_valid_user_created(self):
         data = {'email': 'new@test.com', 'password': 'pass12345', 'first_name': 'Test'}
         serializer = UserCreateSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+
+class LoginSerializerTest(TestCase):
+
+    def test_login_serializer_requires_email_and_password(self):
+        serializer = LoginSerializer(data={})
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('email', serializer.errors)
+        self.assertIn('password', serializer.errors)
+
+    def test_login_serializer_accepts_valid_payload(self):
+        serializer = LoginSerializer(
+            data={'email': 'valid@test.com', 'password': 'Passw0rd!123'},
+        )
         self.assertTrue(serializer.is_valid(), serializer.errors)
 
 

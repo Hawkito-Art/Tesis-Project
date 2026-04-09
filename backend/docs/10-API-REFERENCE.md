@@ -23,6 +23,14 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - `POST /api/auth/logout/`
 - `GET /api/auth/me/`
 
+#### Status codes esperados (Auth)
+
+- `200 OK`: login/refresh/logout/me exitoso.
+- `400 Bad Request`: payload inválido (campos requeridos, token refresh inválido).
+- `401 Unauthorized`: credenciales inválidas o acceso sin token en endpoints protegidos.
+- `403 Forbidden`: usuario autenticado pero con email no verificado.
+- `429 Too Many Requests`: usuario/IP bloqueado por exceso de intentos fallidos.
+
 ### Users y Roles
 
 - `GET/POST /api/users/`

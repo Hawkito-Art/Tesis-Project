@@ -48,6 +48,15 @@ class UserMeSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, trim_whitespace=False)
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=True)
+
+
 class RoleSerializer(serializers.ModelSerializer):
 
     class Meta:
