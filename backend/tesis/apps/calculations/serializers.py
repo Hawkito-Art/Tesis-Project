@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.catalog.models import Entity, Period
+
 from .models import Calculation, CalculationResult
 
 
@@ -40,3 +42,10 @@ class CalculationSerializer(serializers.ModelSerializer):
             'status', 'executed_by', 'started_at', 'finished_at',
             'created_at', 'updated_at',
         ]
+
+
+class CalculationRunSerializer(serializers.Serializer):
+    entity = serializers.PrimaryKeyRelatedField(queryset=Entity.objects.filter(is_active=True))
+    period = serializers.PrimaryKeyRelatedField(queryset=Period.objects.filter(is_active=True))
+    name = serializers.CharField(max_length=255, required=False, allow_blank=False)
+    description = serializers.CharField(required=False, allow_blank=True)

@@ -3,6 +3,15 @@ from django.db import models
 
 
 class Budget(models.Model):
+    STATUS_DRAFT = 'draft'
+    STATUS_APPROVED = 'approved'
+    STATUS_CLOSED = 'closed'
+    STATUS_CHOICES = [
+        (STATUS_DRAFT, 'Borrador'),
+        (STATUS_APPROVED, 'Aprobado'),
+        (STATUS_CLOSED, 'Cerrado'),
+    ]
+
     entity = models.ForeignKey(
         'catalog.Entity',
         on_delete=models.CASCADE,
@@ -13,6 +22,7 @@ class Budget(models.Model):
         on_delete=models.CASCADE,
         related_name='budgets',
     )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_DRAFT)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

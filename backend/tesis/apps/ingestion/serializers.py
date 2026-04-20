@@ -1,6 +1,34 @@
 from rest_framework import serializers
 
+from apps.catalog.models import Entity, Period
+
 from .models import Document, DocumentDetail, ImportJob
+
+
+class DocumentUploadSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    file = serializers.FileField()
+
+    def validate_file(self, value):
+        filename = (value.name or '').lower()
+        if not filename.endswith('.xlsx'):
+            raise serializers.ValidationError(
+                'Solo se permiten archivos con extension .xlsx.'
+            )
+        return value
+
+
+class ImportJobExecutionSerializer(serializers.Serializer):
+    document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
+
+
+class ImportJobProcessSerializer(serializers.Serializer):
+    entity = serializers.PrimaryKeyRelatedField(
+        queryset=Entity.objects.filter(is_active=True)
+    )
+    period = serializers.PrimaryKeyRelatedField(
+        queryset=Period.objects.filter(is_active=True)
+    )
 
 
 class DocumentSerializer(serializers.ModelSerializer):

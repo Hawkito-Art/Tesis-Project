@@ -69,9 +69,29 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 ### Budget
 
 - `GET/POST /api/budgets/`
-- `GET/PATCH /api/budgets/{id}/`
+- `GET/PATCH/DELETE /api/budgets/{id}/`
 - `GET/POST /api/budget-items/`
 - `GET/PATCH/DELETE /api/budget-items/{id}/`
+
+#### Status codes esperados (Budget)
+
+- `200 OK`: lecturas (`list/retrieve`) y `PATCH` exitoso.
+- `201 Created`: creacion exitosa de `Budget` o `BudgetItem`.
+- `204 No Content`: eliminacion exitosa de `Budget` o `BudgetItem`.
+- `400 Bad Request`: payload invalido, duplicados por constraints unicos o regla de negocio sobre presupuesto `closed`.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin privilegios de escritura (solo admin escribe).
+
+#### Filtros, orden y paginacion (Budget)
+
+- `GET /api/budgets/`
+  - filtros: `entity`, `period`, `status`, `is_active`
+  - orden: `ordering` en `id`, `created_at`, `updated_at`
+  - paginacion: `page` (PageNumberPagination global)
+- `GET /api/budget-items/`
+  - filtros: `budget`, `item_type`, `code`, `is_active`
+  - orden: `ordering` en `id`, `code`, `created_at`, `updated_at`
+  - paginacion: `page` (PageNumberPagination global)
 
 ### Indicators
 
@@ -84,22 +104,33 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 
 ### Ingestion
 
-- `GET /api/documents/`
-- `POST /api/documents/upload/`
-- `GET/DELETE /api/documents/{id}/`
-- `GET /api/import-jobs/`
-- `GET /api/import-jobs/{id}/`
-- `POST /api/import-jobs/{id}/validate/`
-- `POST /api/import-jobs/{id}/migrate/`
-- `GET /api/import-jobs/{id}/errors/`
+- `POST /api/ingestion/documents/`
+- `GET /api/ingestion/import-jobs/{id}/`
+- `GET /api/ingestion/import-jobs/{id}/details/`
+
+#### Status codes esperados (Ingestion)
+
+- `200 OK`: consulta de estado de job y detalles por fila.
+- `201 Created`: carga de documento exitosa (a implementar en I3).
+- `400 Bad Request`: payload invalido, archivo no permitido, metadatos incompletos.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin permisos.
+- `404 Not Found`: job no encontrado.
+- `501 Not Implemented`: endpoint de contrato disponible pero implementacion funcional pendiente (fase I1).
 
 ### Calculations y Export
 
-- `GET /api/calculations/`
 - `POST /api/calculations/run/`
-- `GET /api/calculations/{id}/`
-- `GET /api/calculations/{id}/results/`
 - `POST /api/exports/xlsx/`
+
+#### Status codes esperados (Calculations)
+
+- `200 OK`: ejecucion solicitada y aceptada (a implementar en I9 segun estrategia final).
+- `400 Bad Request`: parametros invalidos (`entity/period`).
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin permisos.
+- `404 Not Found`: entidad o periodo no existe.
+- `501 Not Implemented`: endpoint de contrato disponible pero implementacion funcional pendiente (fase I1).
 
 ### Reports
 

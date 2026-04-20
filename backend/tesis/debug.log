@@ -3,3 +3,15 @@
 2026-03-27 16:17:14,269 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
 2026-03-27 16:17:35,561 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
 2026-03-27 16:18:05,407 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-20 17:38:30,933 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-20 17:38:47,489 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-20 17:38:55,032 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-20 17:39:02,172 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-20 17:42:06,423 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-20 17:42:27,217 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-20 17:44:48,945 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-20 17:45:02,183 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-20 17:46:21,587 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-20 17:46:39,317 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-20 17:46:48,163 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-20 17:47:02,682 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
