@@ -99,6 +99,15 @@ class IndicatorVariable(models.Model):
 
 
 class IndicatorRecord(models.Model):
+    SOURCE_MANUAL = 'manual'
+    SOURCE_IMPORTED = 'imported'
+    SOURCE_CALCULATED = 'calculated'
+    SOURCE_CHOICES = [
+        (SOURCE_MANUAL, 'Manual'),
+        (SOURCE_IMPORTED, 'Imported'),
+        (SOURCE_CALCULATED, 'Calculated'),
+    ]
+
     entity = models.ForeignKey(
         'catalog.Entity',
         on_delete=models.CASCADE,
@@ -116,6 +125,21 @@ class IndicatorRecord(models.Model):
     )
     variable_name = models.CharField(max_length=100)
     value = models.DecimalField(max_digits=18, decimal_places=4, null=True, blank=True)
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default=SOURCE_MANUAL)
+    import_job = models.ForeignKey(
+        'ingestion.ImportJob',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='indicator_records',
+    )
+    calculation = models.ForeignKey(
+        'calculations.Calculation',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='indicator_records',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

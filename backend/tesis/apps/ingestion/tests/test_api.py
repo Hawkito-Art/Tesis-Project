@@ -107,13 +107,6 @@ class IngestionApiTestCase(APITestCase):
         )
 
     def test_import_job_process_is_partial_and_tracks_errors(self):
-        group = IndicatorGroup.objects.create(name='Fundamental', group_type='fundamental')
-        Indicator.objects.create(
-            indicator='VENTAS_TOT',
-            name='Ventas Totales',
-            unit='MP',
-            group=group,
-        )
         entity = Entity.objects.create(code='ENT-900', name='Entidad 900', type='empresa')
         period = Period.objects.create(year=2026, month=5, period_type='mensual')
 
@@ -149,6 +142,16 @@ class IngestionApiTestCase(APITestCase):
         ).count()
         self.assertEqual(records_count, 4)
 
+        traced_record = IndicatorRecord.objects.get(
+            entity=entity,
+            period=period,
+            indicator__name='Ventas Totales',
+            variable_name='plan_anual',
+        )
+        self.assertEqual(traced_record.source, IndicatorRecord.SOURCE_IMPORTED)
+        self.assertEqual(traced_record.import_job_id, import_job_id)
+        self.assertIsNone(traced_record.calculation_id)
+
         details_response = self.client.get(
             f'/api/ingestion/import-jobs/{import_job_id}/details/',
             format='json',
@@ -180,13 +183,6 @@ class IngestionApiTestCase(APITestCase):
         self.assertIn('period', process_response.data['error']['details'])
 
     def test_import_job_details_is_paginated(self):
-        group = IndicatorGroup.objects.create(name='Fundamental', group_type='fundamental')
-        Indicator.objects.create(
-            indicator='VENTAS_TOT',
-            name='Ventas Totales',
-            unit='MP',
-            group=group,
-        )
         entity = Entity.objects.create(code='ENT-901', name='Entidad 901', type='empresa')
         period = Period.objects.create(year=2026, month=6, period_type='mensual')
 
@@ -215,13 +211,7 @@ class IngestionApiTestCase(APITestCase):
         self.assertIsNotNone(details_response.data['next'])
 
     def test_import_job_upsert_updates_existing_record_on_reprocess(self):
-        group = IndicatorGroup.objects.create(name='Fundamental', group_type='fundamental')
-        indicator = Indicator.objects.create(
-            indicator='VENTAS_TOT',
-            name='Ventas Totales',
-            unit='MP',
-            group=group,
-        )
+        indicator = Indicator.objects.get(indicator='VENTAS_TOT')
         entity = Entity.objects.create(code='ENT-902', name='Entidad 902', type='empresa')
         period = Period.objects.create(year=2026, month=7, period_type='mensual')
 

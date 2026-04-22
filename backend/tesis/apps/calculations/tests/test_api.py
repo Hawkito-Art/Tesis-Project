@@ -23,13 +23,8 @@ class CalculationRunApiTestCase(APITestCase):
 
         self.entity = Entity.objects.create(code='ENT-CAL-01', name='Entidad Cálculo', type='empresa')
         self.period = Period.objects.create(year=2026, month=8, period_type='mensual')
-        self.group = IndicatorGroup.objects.create(name='Fundamental', group_type='fundamental')
-        self.ventas = Indicator.objects.create(
-            indicator='VENTAS_TOT',
-            name='Ventas Totales',
-            unit='MP',
-            group=self.group,
-        )
+        self.group = IndicatorGroup.objects.get(group_type='fundamental')
+        self.ventas = Indicator.objects.get(indicator='VENTAS_TOT')
         for variable_name, value in (
             ('plan_acumulado', Decimal('145881.2')),
             ('real_acumulado', Decimal('121785.0')),
@@ -91,6 +86,16 @@ class CalculationRunApiTestCase(APITestCase):
         self.assertEqual(result_map['porcentaje_r_p'], Decimal('83.4823'))
         self.assertEqual(result_map['real_aa'], Decimal('121.5306'))
         self.assertEqual(result_map['estimado_prox_mes'], Decimal('133963.5000'))
+
+        traced_record = IndicatorRecord.objects.get(
+            entity=self.entity,
+            period=self.period,
+            indicator=self.ventas,
+            variable_name='porcentaje_r_p',
+        )
+        self.assertEqual(traced_record.source, IndicatorRecord.SOURCE_CALCULATED)
+        self.assertEqual(traced_record.calculation_id, calculation.id)
+        self.assertIsNone(traced_record.import_job_id)
 
     def test_run_calculation_only_runs_when_endpoint_called(self):
         self.assertEqual(Calculation.objects.count(), 0)

@@ -123,7 +123,12 @@ def upsert_indicator_records_from_import_job(
                 indicator=indicator,
                 period=period,
                 variable_name=variable_name,
-                defaults={'value': value},
+                defaults={
+                    'value': value,
+                    'source': IndicatorRecord.SOURCE_IMPORTED,
+                    'import_job': import_job,
+                    'calculation': None,
+                },
             )
             if created:
                 created_count += 1

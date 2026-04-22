@@ -74,6 +74,18 @@ def execute_manual_calculation(*, entity, period, user, name: str | None = None,
                             value=value,
                         )
                     )
+                    IndicatorRecord.objects.update_or_create(
+                        entity=entity,
+                        indicator=indicator,
+                        period=period,
+                        variable_name=variable_name,
+                        defaults={
+                            'value': value,
+                            'source': IndicatorRecord.SOURCE_CALCULATED,
+                            'calculation': calculation,
+                            'import_job': None,
+                        },
+                    )
 
             if results_to_create:
                 CalculationResult.objects.bulk_create(results_to_create)

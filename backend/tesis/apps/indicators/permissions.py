@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from tesis.permissions import log_access_denied
 
@@ -15,13 +15,10 @@ class IndicatorPermission(BasePermission):
             return False
         from tesis.permissions import has_role
 
-        if request.method in ('GET', 'HEAD', 'OPTIONS'):
+        if request.method in SAFE_METHODS:
             return has_role(request.user, 'admin', 'analyst')
 
-        if request.method in ('PUT', 'PATCH'):
-            return has_role(request.user, 'admin', 'analyst')
-
-        if request.method in ('POST', 'DELETE'):
+        if request.method in ('POST', 'PUT', 'PATCH', 'DELETE'):
             return has_role(request.user, 'admin')
 
         return False

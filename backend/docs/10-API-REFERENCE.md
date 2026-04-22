@@ -95,12 +95,31 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 
 ### Indicators
 
+- `GET/POST /api/indicators/groups/`
+- `GET/PATCH/DELETE /api/indicators/groups/{id}/`
 - `GET/POST /api/indicators/`
 - `GET/PATCH/DELETE /api/indicators/{id}/`
-- `GET/POST /api/indicator-variables/`
-- `GET/PATCH/DELETE /api/indicator-variables/{id}/`
-- `GET/POST /api/indicator-records/`
-- `GET/PATCH/DELETE /api/indicator-records/{id}/`
+- `GET/POST /api/indicators/variables/`
+- `GET/PATCH/DELETE /api/indicators/variables/{id}/`
+- `GET /api/indicators/records/`
+
+#### Status codes esperados (Indicators)
+
+- `200 OK`: lecturas (`list/retrieve`) y actualizaciones (`PATCH`) exitosas.
+- `201 Created`: creaciones exitosas (groups/indicators/variables).
+- `204 No Content`: eliminaciones exitosas.
+- `400 Bad Request`: payload invalido, constraints unicos o mismatch variable↔indicador.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin rol permitido.
+- `404 Not Found`: recurso no encontrado.
+- `501 Not Implemented`: endpoint de contrato disponible pero implementacion funcional pendiente (fase IND1).
+
+#### Filtros, orden y paginacion (Indicators)
+
+- `GET /api/indicators/records/`
+  - filtros: `entity`, `indicator`, `group`, `period`, `variable_name`
+  - orden: `ordering` (a definir en implementación IND8)
+  - paginacion: `page` (PageNumberPagination global)
 
 ### Ingestion
 
