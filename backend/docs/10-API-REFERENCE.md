@@ -156,9 +156,32 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - `GET/POST /api/reports/`
 - `GET /api/reports/{id}/`
 - `GET /api/stats/`
-- `GET /api/classifications/`
 - `POST /api/classifications/calculate/`
+- `GET /api/classifications/`
 - `GET /api/classifications/{id}/`
+
+#### Status codes esperados (Reports)
+
+- `200 OK`: lecturas (`list/retrieve`) y cálculo/consulta exitosa de estadísticas/clasificaciones.
+- `201 Created`: creación de reporte cuando aplique persistencia en `POST /api/reports/`.
+- `400 Bad Request`: payload inválido o filtros inconsistentes.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin rol permitido.
+- `404 Not Found`: recurso de reporte/clasificación no encontrado.
+- `501 Not Implemented`: endpoint de contrato disponible pero implementación funcional pendiente (fase R1).
+
+#### Filtros (Stats)
+
+- `GET /api/stats/`
+  - filtros opcionales: `entity`, `period`, `indicator`
+  - respuesta: agregados compactos (`totals`, `records_by_source`, `records_by_indicator`, `average_value_by_indicator`, `latest_calculation`)
+
+#### Filtros (Classifications)
+
+- `GET /api/classifications/`
+  - filtros opcionales: `entity`, `period`, `category` (valor de clasificación), `classification_type`
+  - orden: `ordering` en `id`, `created_at`, `updated_at`
+  - paginación: `page`
 
 ## Checklist de calidad de contrato
 
