@@ -119,11 +119,46 @@ class ReportsGenerateApiTestCase(APITestCase):
         self.assertIn('metadata', response.data)
         self.assertIn('stats', response.data['detail'])
         self.assertIn('classifications', response.data['detail'])
+        self.assertEqual(response.data['detail']['classifications']['status'], 'empty')
+        self.assertEqual(response.data['detail']['classifications']['count'], 0)
+        self.assertEqual(response.data['detail']['classifications']['items'], [])
+        self.assertIn('warnings', response.data['metadata'])
+        self.assertTrue(response.data['metadata']['warnings'])
 
         report = Report.objects.get(id=response.data['id'])
         self.assertEqual(report.entity_id, self.entity.id)
         self.assertEqual(report.period_id, self.period.id)
         self.assertEqual(report.generated_by_id, self.admin_user.id)
+
+    def test_post_reports_includes_existing_classifications_when_present(self):
+        EntityClassification.objects.create(
+            entity=self.entity,
+            period=self.period,
+            classification_type='overall_performance',
+            value='alto_desempeno',
+            description='ok',
+            rule_version='r7-v1',
+            criteria_snapshot={'input': {'calculation_results_count': 1, 'average_value': 90.0}},
+        )
+
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(
+            self.reports_url,
+            {
+                'entity': self.entity.id,
+                'period': self.period.id,
+                'report_type': 'operational',
+                'include_stats': True,
+                'include_classifications': True,
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['detail']['classifications']['status'], 'available')
+        self.assertEqual(response.data['detail']['classifications']['count'], 1)
+        self.assertEqual(response.data['detail']['classifications']['items'][0]['value'], 'alto_desempeno')
+        self.assertNotIn('warnings', response.data['metadata'])
 
     def test_get_reports_list_allows_analyst_with_pagination_and_filters(self):
         Report.objects.create(
@@ -340,6 +375,12 @@ class ReportsStatsApiTestCase(APITestCase):
         self.assertEqual(response.data['totals']['indicator_records'], 2)
         self.assertEqual(response.data['totals']['calculation_results'], 1)
 
+    def test_get_stats_legacy_path_returns_payload(self):
+        self.client.force_authenticate(user=self.analyst_user)
+        response = self.client.get('/api/reports/stats/', format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('totals', response.data)
+
     def test_get_stats_returns_400_for_invalid_indicator(self):
         self.client.force_authenticate(user=self.analyst_user)
         response = self.client.get(self.stats_url, {'indicator': 999999}, format='json')
@@ -492,6 +533,35 @@ class ReportsClassificationsApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.analyst_user)
         response = self.client.get('/api/classifications/9999/', format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_classifications_legacy_list_path_returns_payload(self):
+        EntityClassification.objects.create(
+            entity=self.entity,
+            period=self.period,
+            classification_type='overall_performance',
+            value='alto_desempeno',
+            description='ok',
+            rule_version='r7-v1',
+            criteria_snapshot={'input': {'calculation_results_count': 1, 'average_value': 90.0}},
+        )
+        self.client.force_authenticate(user=self.analyst_user)
+        response = self.client.get('/api/reports/classifications/', format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+
+    def test_post_classifications_legacy_calculate_path_generates_for_admin(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(
+            '/api/reports/classifications/calculate/',
+            {
+                'entity': self.entity.id,
+                'period': self.period.id,
+                'classification_type': 'overall_performance',
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['classification_type'], 'overall_performance')
 
     def test_get_classifications_detail_requires_authentication(self):
         classification = EntityClassification.objects.create(

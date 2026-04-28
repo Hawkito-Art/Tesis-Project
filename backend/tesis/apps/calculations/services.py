@@ -1,8 +1,10 @@
 from decimal import Decimal, ROUND_HALF_UP
+from io import BytesIO
 from unicodedata import normalize
 
 from django.db import transaction
 from django.utils import timezone
+from openpyxl import Workbook
 
 from .models import Calculation, CalculationResult
 from apps.indicators.models import Indicator, IndicatorRecord
@@ -100,6 +102,72 @@ def execute_manual_calculation(*, entity, period, user, name: str | None = None,
         raise
 
     return calculation
+
+
+def build_export_workbook(*, entity=None, period=None) -> Workbook:
+    """Construye workbook XLSX con registros de indicadores filtrados."""
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'indicator_records'
+
+    headers = [
+        'entity_code',
+        'entity_name',
+        'period_year',
+        'period_month',
+        'period_type',
+        'indicator_code',
+        'indicator_name',
+        'indicator_group',
+        'variable_name',
+        'value',
+        'source',
+        'import_job_id',
+        'calculation_id',
+        'created_at',
+        'updated_at',
+    ]
+    worksheet.append(headers)
+
+    queryset = (
+        IndicatorRecord.objects.select_related('entity', 'period', 'indicator__group')
+        .order_by('entity__code', 'period__year', 'period__month', 'period__id', 'indicator__indicator', 'variable_name', 'id')
+    )
+    if entity is not None:
+        queryset = queryset.filter(entity=entity)
+    if period is not None:
+        queryset = queryset.filter(period=period)
+
+    for record in queryset:
+        worksheet.append(
+            [
+                record.entity.code,
+                record.entity.name,
+                record.period.year,
+                record.period.month,
+                record.period.period_type,
+                record.indicator.indicator,
+                record.indicator.name,
+                record.indicator.group.name,
+                record.variable_name,
+                float(record.value) if record.value is not None else None,
+                record.source,
+                record.import_job_id,
+                record.calculation_id,
+                record.created_at.isoformat(),
+                record.updated_at.isoformat(),
+            ]
+        )
+
+    return workbook
+
+
+def render_workbook_to_bytes(workbook: Workbook) -> bytes:
+    """Serializa un workbook en memoria para respuesta HTTP."""
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+    return output.getvalue()
 
 
 def compute_standard_derived_values(

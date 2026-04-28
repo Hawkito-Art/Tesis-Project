@@ -11,9 +11,21 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'first_name', 'last_name']
+        fields = [
+            'id',
+            'email',
+            'password',
+            'first_name',
+            'last_name',
+            'email_verified',
+            'is_active',
+            'is_staff',
+        ]
         extra_kwargs = {
             'email': {'required': True},
+            'email_verified': {'required': False},
+            'is_active': {'required': False},
+            'is_staff': {'required': False},
         }
 
     def validate_email(self, value):
@@ -23,6 +35,25 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'email_verified',
+            'is_active',
+            'is_staff',
+        ]
+
+    def validate_email(self, value):
+        qs = User.objects.exclude(pk=self.instance.pk if self.instance else None)
+        if qs.filter(email=value).exists():
+            raise serializers.ValidationError('Ya existe un usuario con este email.')
+        return value
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

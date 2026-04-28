@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,7 +28,18 @@ class ContractNotImplementedMixin:
         )
 
 
-class ReportContractListAPIView(ContractNotImplementedMixin, APIView):
+class PaginatedAPIViewMixin:
+    @property
+    def paginator(self):
+        if not hasattr(self, '_paginator'):
+            from rest_framework.settings import api_settings
+
+            pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+            self._paginator = pagination_class() if pagination_class else None
+        return self._paginator
+
+
+class ReportContractListAPIView(PaginatedAPIViewMixin, ContractNotImplementedMixin, APIView):
     permission_classes = [IsAuthenticated, ReportPermission]
 
     def get(self, request):
@@ -61,14 +72,9 @@ class ReportContractListAPIView(ContractNotImplementedMixin, APIView):
         ordering = params.get('ordering', '-created_at')
         queryset = queryset.order_by(ordering)
 
-        paginator = PageNumberPagination()
-        page_size = params.get('page_size')
-        if page_size:
-            paginator.page_size = page_size
-
-        page = paginator.paginate_queryset(queryset, request)
+        page = self.paginator.paginate_queryset(queryset, request, view=self)
         serialized = ReportSerializer(page, many=True, context={'request': request})
-        return paginator.get_paginated_response(serialized.data)
+        return self.paginator.get_paginated_response(serialized.data)
 
     def post(self, request):
         serializer = ReportGenerateRequestSerializer(data=request.data)
@@ -108,7 +114,7 @@ class ReportContractDetailAPIView(ContractNotImplementedMixin, APIView):
     def get(self, request, pk: int):
         report = Report.objects.select_related('entity', 'period', 'generated_by').filter(pk=pk).first()
         if not report:
-            return Response({'detail': 'Report no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound('Report no encontrado.')
 
         return Response(
             ReportSerializer(report, context={'request': request}).data,
@@ -134,7 +140,7 @@ class ReportStatsContractAPIView(ContractNotImplementedMixin, APIView):
         return Response(output_serializer.validated_data, status=status.HTTP_200_OK)
 
 
-class EntityClassificationContractListAPIView(ContractNotImplementedMixin, APIView):
+class EntityClassificationContractListAPIView(PaginatedAPIViewMixin, ContractNotImplementedMixin, APIView):
     permission_classes = [IsAuthenticated, ReportPermission]
 
     def get(self, request):
@@ -161,15 +167,9 @@ class EntityClassificationContractListAPIView(ContractNotImplementedMixin, APIVi
         ordering = params.get('ordering', '-created_at')
         queryset = queryset.order_by(ordering)
 
-        paginator = PageNumberPagination()
-        page_size = params.get('page_size')
-        if page_size:
-            paginator.page_size = page_size
-
-        page = paginator.paginate_queryset(queryset, request)
+        page = self.paginator.paginate_queryset(queryset, request, view=self)
         serialized = EntityClassificationSerializer(page, many=True, context={'request': request})
-        return paginator.get_paginated_response(serialized.data)
-
+        return self.paginator.get_paginated_response(serialized.data)
 
 class EntityClassificationContractDetailAPIView(ContractNotImplementedMixin, APIView):
     permission_classes = [IsAuthenticated, ReportPermission]
@@ -177,10 +177,7 @@ class EntityClassificationContractDetailAPIView(ContractNotImplementedMixin, API
     def get(self, request, pk: int):
         classification = EntityClassification.objects.select_related('entity', 'period').filter(pk=pk).first()
         if not classification:
-            return Response(
-                {'detail': 'Clasificacion no encontrada.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise NotFound('Clasificacion no encontrada.')
 
         return Response(
             EntityClassificationSerializer(classification, context={'request': request}).data,

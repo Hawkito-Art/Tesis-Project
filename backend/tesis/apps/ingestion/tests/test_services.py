@@ -13,12 +13,17 @@ from apps.ingestion.services import parse_document_indicator_rows
 class IngestionParserServiceTestCase(TestCase):
     def setUp(self):
         self.temp_media_root = tempfile.mkdtemp(prefix='tesis-test-media-')
-        self.group = IndicatorGroup.objects.create(name='Fundamental', group_type='fundamental')
-        self.ventas = Indicator.objects.create(
+        self.group, _ = IndicatorGroup.objects.get_or_create(
+            group_type='fundamental',
+            defaults={'name': 'Fundamental', 'order': 1},
+        )
+        self.ventas, _ = Indicator.objects.get_or_create(
             indicator='VENTAS_TOT',
             name='Ventas Totales',
-            unit='MP',
-            group=self.group,
+            defaults={
+                'unit': 'MP',
+                'group': self.group,
+            },
         )
 
     def tearDown(self):

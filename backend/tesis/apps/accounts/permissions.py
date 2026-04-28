@@ -1,6 +1,6 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from tesis.permissions import IsAdmin, log_access_denied
+from tesis.permissions import IsAdmin, has_role, log_access_denied
 
 
 class IsAdminUser(IsAdmin):
@@ -19,3 +19,19 @@ class IsOwnerOrAdmin(BasePermission):
             return True
         log_access_denied(request, 'se requiere ser propietario o admin')
         return False
+
+
+class AccountsDirectoryPermission(BasePermission):
+    """Lectura para autenticados; escritura solo admin."""
+
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+
+        if request.method in SAFE_METHODS:
+            return True
+
+        allowed = has_role(request.user, 'admin')
+        if not allowed:
+            log_access_denied(request, 'accounts directory: se requiere rol admin para escritura')
+        return allowed

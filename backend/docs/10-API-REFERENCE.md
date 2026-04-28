@@ -13,6 +13,10 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - Base path: `/api/`
 - Autenticacion: `Authorization: Bearer <token>`
 - Formato de error: ver [12-ERRORS](12-ERRORS.md)
+- Errores de API normalizados por `custom_exception_handler` en el formato `{"error": {"code", "message", "details", "trace_id"}}`.
+- Paginacion global (PageNumberPagination):
+  - `page`: numero de pagina.
+  - `page_size` (opcional): tamano de pagina (max 100).
 
 ## Endpoints principales
 
@@ -37,6 +41,16 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - `GET/PATCH/DELETE /api/users/{id}/`
 - `GET/POST /api/roles/`
 - `GET/PATCH/DELETE /api/roles/{id}/`
+
+#### Status codes esperados (Users y Roles)
+
+- `200 OK`: lecturas (`list/retrieve`) y `PATCH` exitoso.
+- `201 Created`: creacion de usuario o rol.
+- `204 No Content`: eliminacion exitosa (**hard delete**).
+- `400 Bad Request`: payload invalido o reglas de validacion.
+- `401 Unauthorized`: acceso sin token.
+- `403 Forbidden`: usuario autenticado sin privilegios de escritura (solo admin escribe).
+- `404 Not Found`: recurso no encontrado.
 
 ### Catalog
 
@@ -140,16 +154,23 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 ### Calculations y Export
 
 - `POST /api/calculations/run/`
+- `GET /api/calculations/{id}/`
+- `GET /api/calculations/{id}/results/`
 - `POST /api/exports/xlsx/`
 
 #### Status codes esperados (Calculations)
 
-- `200 OK`: ejecucion solicitada y aceptada (a implementar en I9 segun estrategia final).
-- `400 Bad Request`: parametros invalidos (`entity/period`).
+- `200 OK`:
+  - `POST /api/calculations/run/`: ejecucion solicitada y aceptada.
+  - `GET /api/calculations/{id}/`: detalle de corrida con **`results` embebidos** en el serializer.
+  - `GET /api/calculations/{id}/results/`: listado paginado de resultados con filtros (`entity`, `indicator`, `variable_name`) y `ordering`.
+  - `POST /api/exports/xlsx/`: descarga inmediata de archivo XLSX.
+    - `Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+    - `Content-Disposition: attachment; filename="export_<timestamp>.xlsx"`
+- `400 Bad Request`: parametros invalidos (`entity/period`, filtros u ordenamiento no permitidos).
 - `401 Unauthorized`: acceso sin token.
 - `403 Forbidden`: usuario autenticado sin permisos.
-- `404 Not Found`: entidad o periodo no existe.
-- `501 Not Implemented`: endpoint de contrato disponible pero implementacion funcional pendiente (fase I1).
+- `404 Not Found`: corrida de calculo no existe (`/api/calculations/{id}/`, `/api/calculations/{id}/results/`).
 
 ### Reports
 
@@ -159,6 +180,12 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
 - `POST /api/classifications/calculate/`
 - `GET /api/classifications/`
 - `GET /api/classifications/{id}/`
+
+Compatibilidad legacy (mantenidos temporalmente):
+- `GET /api/reports/stats/`
+- `POST /api/reports/classifications/calculate/`
+- `GET /api/reports/classifications/`
+- `GET /api/reports/classifications/{id}/`
 
 #### Status codes esperados (Reports)
 
@@ -183,9 +210,15 @@ Consolidar endpoints del backend y su uso esperado por frontend e integraciones.
   - orden: `ordering` en `id`, `created_at`, `updated_at`
   - paginación: `page`
 
+#### Comportamiento `POST /api/reports/` con clasificaciones
+
+- Cuando `include_classifications=true`:
+  - si existen clasificaciones persistidas para `entity+period`: se incluyen en `detail.classifications.items`.
+  - si no existen: se devuelve bloque vacío (`count=0`, `items=[]`, `status='empty'`) y warning en `metadata.warnings`.
+
 ## Checklist de calidad de contrato
 
-- [ ] Cada endpoint tiene serializer de entrada y salida.
-- [ ] Cada endpoint tiene permisos definidos.
-- [ ] Cada endpoint documenta codigos HTTP esperados.
-- [ ] Endpoints de lista incluyen paginacion y filtros.
+- [x] Cada endpoint tiene serializer de entrada y salida.
+- [x] Cada endpoint tiene permisos definidos.
+- [x] Cada endpoint documenta codigos HTTP esperados.
+- [x] Endpoints de lista incluyen paginacion y filtros.

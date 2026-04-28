@@ -54,18 +54,6 @@ def build_report_payload(*, entity, period, report_type: str, include_stats: boo
         'indicators': by_indicator,
     }
 
-    if include_stats:
-        detail['stats'] = {
-            'distinct_indicators': len(by_indicator.keys()),
-            'distinct_variables': len({r.variable_name for r in records}),
-        }
-
-    if include_classifications:
-        detail['classifications'] = {
-            'included': True,
-            'status': 'pending-R7',
-        }
-
     metadata = {
         'entity_id': entity.id,
         'entity_code': entity.code,
@@ -76,6 +64,43 @@ def build_report_payload(*, entity, period, report_type: str, include_stats: boo
         'generated_at': timezone.now().isoformat(),
         'source_modules': ['indicators', 'calculations'],
     }
+
+    if include_stats:
+        detail['stats'] = {
+            'distinct_indicators': len(by_indicator.keys()),
+            'distinct_variables': len({r.variable_name for r in records}),
+        }
+
+    if include_classifications:
+        classifications = list(
+            EntityClassification.objects.filter(entity=entity, period=period)
+            .order_by('classification_type', '-updated_at')
+            .values(
+                'id',
+                'classification_type',
+                'value',
+                'description',
+                'rule_version',
+                'criteria_snapshot',
+                'updated_at',
+            )
+        )
+
+        for row in classifications:
+            row['updated_at'] = row['updated_at'].isoformat() if row['updated_at'] else None
+
+        detail['classifications'] = {
+            'included': True,
+            'count': len(classifications),
+            'items': classifications,
+            'status': 'available' if classifications else 'empty',
+        }
+
+        if not classifications:
+            metadata['warnings'] = metadata.get('warnings', [])
+            metadata['warnings'].append(
+                'No existen clasificaciones persistidas para la entidad/periodo solicitado.'
+            )
 
     return {
         'summary': summary,

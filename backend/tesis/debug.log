@@ -39,3 +39,112 @@
 2026-04-27 14:00:59,050 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
 2026-04-27 14:01:03,006 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
 2026-04-27 14:01:16,581 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-27 14:14:37,591 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-27 14:14:53,988 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-27 14:15:00,320 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-27 14:15:03,512 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-27 14:15:36,402 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-27 14:15:39,846 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-27 14:15:56,519 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-27 14:19:51,728 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-27 14:20:16,419 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-27 14:20:34,840 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:20:52,143 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:22:55,914 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-27 14:23:13,358 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-27 14:24:42,497 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-27 14:24:59,547 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-27 14:25:08,881 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:25:23,645 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:29:51,472 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-27 14:31:13,842 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-27 14:31:25,030 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-27 14:31:36,455 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-27 14:31:45,732 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-04-27 14:59:10,142 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:59:29,440 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-27 14:59:33,076 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:59:40,926 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-27 14:59:41,947 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-27 14:59:59,433 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-27 15:00:07,992 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-27 15:00:16,373 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-27 15:00:24,844 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-04-28 14:44:28,399 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 14:57:32,147 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 14:57:57,766 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 14:58:19,615 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 15:04:53,781 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 15:05:03,386 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 15:05:19,536 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-28 15:05:27,751 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-28 15:05:36,861 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-28 15:05:45,536 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-04-28 15:06:25,697 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 15:07:07,270 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 15:07:18,081 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 15:07:36,484 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-28 15:07:44,792 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-28 15:07:54,046 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-28 15:08:02,574 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-04-28 15:08:41,942 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 15:09:00,140 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 15:09:13,407 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 15:10:31,418 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-28 15:10:52,855 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-28 15:11:01,624 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 15:11:17,826 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 15:11:24,852 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 15:11:28,064 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 15:12:00,061 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 15:12:03,375 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 15:12:20,242 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 15:59:03,529 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-28 15:59:20,912 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-28 15:59:29,356 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 15:59:45,173 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 15:59:51,565 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 15:59:54,640 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:00:25,675 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:00:28,796 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:00:43,935 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:01:06,900 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:01:24,235 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:01:37,827 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:03:20,040 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-28 16:03:36,761 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-28 16:03:45,118 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:04:00,233 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:04:06,277 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:04:09,350 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:04:39,396 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:04:42,512 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:04:58,286 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:05:55,974 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-04-28 16:05:59,079 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:06:04,742 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:06:32,185 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 16:06:36,042 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-04-28 16:06:41,876 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:06:44,418 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:06:50,197 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 16:06:57,515 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:07:02,152 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:07:08,693 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-04-28 16:07:20,450 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-28 16:07:30,411 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-28 16:07:40,660 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-28 16:07:44,039 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:07:59,137 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:08:15,895 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 16:08:19,779 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-28 16:08:27,551 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:08:27,642 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-04-28 16:08:31,800 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:08:47,857 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-04-28 16:08:57,738 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-04-28 16:09:08,891 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-04-28 16:09:11,418 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:09:15,764 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-04-28 16:09:20,370 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-04-28 16:09:33,636 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura

@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -50,10 +50,7 @@ class ImportJobDetailContractAPIView(APIView):
 
         import_job = ImportJob.objects.select_related('document').filter(pk=pk).first()
         if not import_job:
-            return Response(
-                {'detail': 'ImportJob no encontrado.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise NotFound('ImportJob no encontrado.')
 
         return Response(
             ImportJobSerializer(import_job, context={'request': request}).data,
@@ -65,10 +62,7 @@ class ImportJobDetailContractAPIView(APIView):
 
         import_job = ImportJob.objects.select_related('document').filter(pk=pk).first()
         if not import_job:
-            return Response(
-                {'detail': 'ImportJob no encontrado.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise NotFound('ImportJob no encontrado.')
 
         process_serializer = ImportJobProcessSerializer(data=request.data)
         process_serializer.is_valid(raise_exception=True)
@@ -98,21 +92,19 @@ class ImportJobDetailsContractAPIView(APIView):
 
         import_job = ImportJob.objects.filter(pk=pk).first()
         if not import_job:
-            return Response(
-                {'detail': 'ImportJob no encontrado.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise NotFound('ImportJob no encontrado.')
 
         details_qs = DocumentDetail.objects.filter(import_job=import_job).order_by('row_number')
 
-        paginator = PageNumberPagination()
-        page_size = request.query_params.get('page_size')
-        if page_size:
-            try:
-                paginator.page_size = max(1, min(int(page_size), 100))
-            except (TypeError, ValueError):
-                paginator.page_size = 20
-
-        page = paginator.paginate_queryset(details_qs, request)
+        page = self.paginator.paginate_queryset(details_qs, request, view=self)
         serialized = DocumentDetailSerializer(page, many=True, context={'request': request})
-        return paginator.get_paginated_response(serialized.data)
+        return self.paginator.get_paginated_response(serialized.data)
+
+    @property
+    def paginator(self):
+        if not hasattr(self, '_paginator'):
+            from rest_framework.settings import api_settings
+
+            pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+            self._paginator = pagination_class() if pagination_class else None
+        return self._paginator

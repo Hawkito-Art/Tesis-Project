@@ -38,7 +38,6 @@ class ReportListQuerySerializer(serializers.Serializer):
         required=False,
         default='-created_at',
     )
-    page_size = serializers.IntegerField(required=False, min_value=1, max_value=100)
     created_from = serializers.DateField(required=False)
     created_to = serializers.DateField(required=False)
 
@@ -127,7 +126,6 @@ class EntityClassificationListQuerySerializer(serializers.Serializer):
         required=False,
         default='-created_at',
     )
-    page_size = serializers.IntegerField(required=False, min_value=1, max_value=100)
 
 
 class ReportStatsQuerySerializer(serializers.Serializer):

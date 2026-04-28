@@ -49,3 +49,37 @@ class CalculationRunSerializer(serializers.Serializer):
     period = serializers.PrimaryKeyRelatedField(queryset=Period.objects.filter(is_active=True))
     name = serializers.CharField(max_length=255, required=False, allow_blank=False)
     description = serializers.CharField(required=False, allow_blank=True)
+
+
+class CalculationExportXlsxSerializer(serializers.Serializer):
+    entity = serializers.PrimaryKeyRelatedField(
+        queryset=Entity.objects.filter(is_active=True),
+        required=False,
+    )
+    period = serializers.PrimaryKeyRelatedField(
+        queryset=Period.objects.filter(is_active=True),
+        required=False,
+    )
+
+
+class CalculationResultListQuerySerializer(serializers.Serializer):
+    entity = serializers.PrimaryKeyRelatedField(
+        queryset=Entity.objects.filter(is_active=True),
+        required=False,
+    )
+    indicator = serializers.IntegerField(required=False, min_value=1)
+    variable_name = serializers.CharField(required=False, allow_blank=False, max_length=100)
+    ordering = serializers.ChoiceField(
+        choices=[
+            'id',
+            '-id',
+            'created_at',
+            '-created_at',
+            'value',
+            '-value',
+            'variable_name',
+            '-variable_name',
+        ],
+        required=False,
+        default='-id',
+    )
