@@ -148,3 +148,438 @@
 2026-04-28 16:09:15,764 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
 2026-04-28 16:09:20,370 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
 2026-04-28 16:09:33,636 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-04-30 17:59:38,799 [ERROR] django.request: Internal Server Error: /admin/budget/budgetitem/
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such column: budget_budget.status
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 2121, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such column: budget_budget.status
+2026-04-30 17:59:59,959 [ERROR] django.request: Internal Server Error: /admin/budget/budget/
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such column: budget_budget.status
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 2121, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such column: budget_budget.status
+2026-04-30 18:00:03,227 [ERROR] django.request: Internal Server Error: /admin/catalog/entity/
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such column: catalog_entity.type
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 2121, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such column: catalog_entity.type
+2026-04-30 18:05:46,247 [ERROR] django.request: Internal Server Error: /admin/token_blacklist/blacklistedtoken/
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: token_blacklist_blacklistedtoken
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 1982, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 857, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/views/main.py", line 143, in __init__
+    self.get_results(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/views/main.py", line 300, in get_results
+    result_count = paginator.count
+                   ^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/paginator.py", line 189, in count
+    return c()
+           ^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 610, in count
+    return self.query.get_count(using=self.db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 656, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 638, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: token_blacklist_blacklistedtoken
+2026-04-30 18:05:55,506 [ERROR] django.request: Internal Server Error: /admin/reports/report/
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: reports_report
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 710, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/sites.py", line 247, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 1982, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/options.py", line 857, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/views/main.py", line 143, in __init__
+    self.get_results(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/contrib/admin/views/main.py", line 300, in get_results
+    result_count = paginator.count
+                   ^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/paginator.py", line 189, in count
+    return c()
+           ^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/query.py", line 610, in count
+    return self.query.get_count(using=self.db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 656, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 638, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/db/backends/sqlite3/base.py", line 359, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: reports_report
+2026-05-01 15:18:43,856 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-05-01 15:19:06,429 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-05-01 15:19:13,962 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-05-01 15:19:27,576 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-05-01 15:19:34,410 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-05-01 15:19:42,459 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-05-01 15:19:55,484 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-05-01 15:23:13,271 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/roles/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-05-01 15:23:20,566 [WARNING] apps: Acceso denegado | usuario=analyst-directory@test.com | ip=127.0.0.1 | path=/api/users/ | motivo=accounts directory: se requiere rol admin para escritura
+2026-05-01 15:23:33,903 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin
+2026-05-01 15:23:40,512 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin o analyst
+2026-05-01 15:23:47,313 [WARNING] apps: Acceso denegado | usuario=analyst@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol admin u operator
+2026-05-01 15:23:53,921 [WARNING] apps: Acceso denegado | usuario=operator@test.com | ip=127.0.0.1 | path=/test/ | motivo=se requiere rol analyst
+2026-05-01 15:24:22,769 [WARNING] apps: Acceso denegado | usuario=regular-calc@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-05-01 15:24:36,400 [WARNING] apps: Acceso denegado | usuario=regular-export@test.com | ip=127.0.0.1 | path=/api/exports/xlsx/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-05-01 15:24:46,915 [WARNING] apps: Acceso denegado | usuario=regular-calc-perm@test.com | ip=127.0.0.1 | path=/api/calculations/run/ | motivo=se requiere rol admin o analyst para ejecutar calculos
+2026-05-01 15:25:45,079 [WARNING] apps: Acceso denegado | usuario=regular-ingestion@test.com | ip=127.0.0.1 | path=/api/ingestion/documents/ | motivo=se requiere rol admin u operator para escritura de ingestion
+2026-05-01 15:25:58,454 [WARNING] apps: Acceso denegado | usuario=regular-ing-perm@test.com | ip=127.0.0.1 | path=/api/ingestion/import-jobs/1/ | motivo=se requiere rol admin u operator para lectura de ingestion
+2026-05-01 15:26:05,547 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/1/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-05-01 15:26:18,364 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-05-01 15:26:23,409 [WARNING] apps: Acceso denegado | usuario=analyst-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-05-01 15:26:26,041 [WARNING] apps: Acceso denegado | usuario=regular-class@test.com | ip=127.0.0.1 | path=/api/classifications/calculate/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-05-01 15:26:50,720 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-05-01 15:26:53,280 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
+2026-05-01 15:27:05,928 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
