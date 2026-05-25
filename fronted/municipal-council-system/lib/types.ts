@@ -115,46 +115,92 @@ export interface ImportJobDetail {
 }
 
 // ─── Indicators ───────────────────────────────────────────────────────────────
+export type GroupType = 'fundamental' | 'limite' | 'otro'
+
 export interface IndicatorGroup {
   id: number
   name: string
-  description?: string
+  group_type: GroupType
+  order: number
+  is_active: boolean
+  created_at: string
 }
 
-export interface Variable {
+export type IndicatorUnit = 'MP' | 'U' | 'p' | 'peso' | 'Coef'
+
+export interface IndicatorVariable {
   id: number
+  indicator: number
   name: string
-  code: string
-  type: string
+  label: string
+  description: string
+  is_active: boolean
 }
 
 export interface Indicator {
   id: number
+  indicator: string
   name: string
-  code: string
-  formula: string
-  group: IndicatorGroup
-  variables: Variable[]
+  description: string
+  unit: IndicatorUnit
+  group: number
+  group_name: string
+  variables: IndicatorVariable[]
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
+
+export type RecordSource = 'manual' | 'imported' | 'calculated'
 
 export interface IndicatorRecord {
   id: number
-  indicator: Indicator
-  entity: Entity
-  period: Period
-  value: number
-  recorded_at: string
+  entity: number
+  indicator: number
+  period: number
+  variable_name: string
+  value: string | null
+  source: RecordSource
+  source_display: string
+  import_job: number | null
+  import_job_id: number | null
+  calculation: number | null
+  calculation_id: number | null
+  entity_code: string
+  indicator_code: string
+  period_display: string
+  created_at: string
+  updated_at: string
 }
 
 // ─── Calculations ─────────────────────────────────────────────────────────────
-export type CalcType = 'full' | 'partial' | 'projection'
+export type CalcStatus = 'pendiente' | 'en_progreso' | 'completado' | 'error'
 
-export interface CalcResult {
+export interface Calculation {
   id: number
-  entity: Entity
-  period: Period
-  calc_type: CalcType
-  result_data: Record<string, unknown>
+  name: string
+  description: string
+  period: number
+  period_display: string
+  status: CalcStatus
+  executed_by: number | null
+  executed_by_email: string | null
+  started_at: string | null
+  finished_at: string | null
+  created_at: string
+  updated_at: string
+  results?: CalculationResult[]
+}
+
+export interface CalculationResult {
+  id: number
+  calculation: number
+  entity: number
+  indicator: number
+  variable_name: string
+  value: string | null
+  entity_code: string
+  indicator_code: string
   created_at: string
 }
 

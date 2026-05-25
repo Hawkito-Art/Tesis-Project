@@ -1,29 +1,27 @@
 'use client'
 
 import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { Loader2, Play, CheckCircle } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loader2, Play, CheckCircle, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 import { calculationsApi } from '@/features/calculations/api'
 import { entitiesApi, periodsApi } from '@/features/catalog/api'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-
-const CALC_TYPES = [
-  { value: 'full', label: 'Cálculo completo' },
-  { value: 'partial', label: 'Cálculo parcial' },
-  { value: 'projection', label: 'Proyección' },
-]
+import type { Calculation, Entity, Period } from '@/lib/types'
 
 export function CalcRunClient() {
+  const qc = useQueryClient()
   const [entityId, setEntityId] = useState('')
   const [periodId, setPeriodId] = useState('')
-  const [calcType, setCalcType] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [calcName, setCalcName] = useState('')
+  const [result, setResult] = useState<Calculation | null>(null)
 
-  const { data: entities } = useQuery({ queryKey: ['entities', 0], queryFn: () => entitiesApi.list() })
+  const { data: entities } = useQuery({ queryKey: ['entities'], queryFn: () => entitiesApi.list() })
   const { data: periods } = useQuery({ queryKey: ['periods'], queryFn: () => periodsApi.list() })
 
   const runMutation = useMutation({
@@ -31,22 +29,26 @@ export function CalcRunClient() {
       calculationsApi.run({
         entity: Number(entityId),
         period: Number(periodId),
-        calc_type: calcType,
+        name: calcName || undefined,
       }),
-    onSuccess: () => {
-      setSuccess(true)
+    onSuccess: (data) => {
+      setResult(data)
+      qc.invalidateQueries({ queryKey: ['calculations'] })
       toast.success('Cálculo ejecutado correctamente')
     },
-    onError: () => toast.error('Error al ejecutar el cálculo'),
+    onError: (error) => {
+      const detail = (error as { response?: { data?: { error?: { detail?: string } } } })?.response?.data?.error?.detail
+      toast.error(detail || 'Error al ejecutar el cálculo')
+    },
   })
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!entityId || !periodId || !calcType) {
-      toast.error('Complete todos los campos')
+    if (!entityId || !periodId) {
+      toast.error('Seleccione entidad y período')
       return
     }
-    setSuccess(false)
+    setResult(null)
     runMutation.mutate()
   }
 
@@ -54,20 +56,16 @@ export function CalcRunClient() {
     <div className="space-y-5 max-w-lg">
       <div>
         <h2 className="text-base font-semibold">Ejecutar cálculo</h2>
-        <p className="text-xs text-muted-foreground">Seleccione los parámetros y ejecute el proceso de cálculo</p>
+        <p className="text-xs text-muted-foreground">Seleccione los parámetros y ejecute el proceso de cálculo automático</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-6 space-y-5">
         <div className="space-y-1.5">
           <Label>Entidad</Label>
           <Select value={entityId} onValueChange={setEntityId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar entidad" />
-            </SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Seleccionar entidad" /></SelectTrigger>
             <SelectContent>
-              {entities?.results.map((e) => (
-                <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>
-              ))}
+              {entities?.results.map((e: Entity) => <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
@@ -75,35 +73,29 @@ export function CalcRunClient() {
         <div className="space-y-1.5">
           <Label>Período</Label>
           <Select value={periodId} onValueChange={setPeriodId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar período" />
-            </SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Seleccionar período" /></SelectTrigger>
             <SelectContent>
-              {periods?.results.map((p) => (
-                <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>
-              ))}
+              {periods?.results.map((p: Period) => <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-1.5">
-          <Label>Tipo de cálculo</Label>
-          <Select value={calcType} onValueChange={setCalcType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              {CALC_TYPES.map((t) => (
-                <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>Nombre del cálculo (opcional)</Label>
+          <Input placeholder="Ej: Cierre mensual" value={calcName} onChange={(e) => setCalcName(e.target.value)} />
         </div>
 
-        {success && (
-          <div className="flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
-            <CheckCircle className="w-4 h-4" />
-            El cálculo se ejecutó correctamente.
+        {result && (
+          <div className="flex items-center justify-between text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              <span>Cálculo completado: <strong>{result.name}</strong></span>
+            </div>
+            <Button variant="link" size="sm" className="h-auto p-0 text-emerald-700" asChild>
+              <Link href={`/dashboard/calculations/${result.id}`}>
+                Ver detalles <ArrowRight className="w-3 h-3 ml-1" />
+              </Link>
+            </Button>
           </div>
         )}
 
