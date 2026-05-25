@@ -13,18 +13,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export function RecordsClient() {
   const [page, setPage] = useState(0)
-  const [indicatorFilter, setIndicatorFilter] = useState('')
-  const [entityFilter, setEntityFilter] = useState('')
-  const [periodFilter, setPeriodFilter] = useState('')
+  const [indicatorFilter, setIndicatorFilter] = useState('all')
+  const [entityFilter, setEntityFilter] = useState('all')
+  const [periodFilter, setPeriodFilter] = useState('all')
 
   const { data, isLoading } = useQuery({
     queryKey: ['indicator-records', page, indicatorFilter, entityFilter, periodFilter],
     queryFn: () =>
       recordsApi.list({
         page: page + 1,
-        indicator: indicatorFilter || undefined,
-        entity: entityFilter || undefined,
-        period: periodFilter || undefined,
+        indicator: indicatorFilter === 'all' ? undefined : indicatorFilter,
+        entity: entityFilter === 'all' ? undefined : entityFilter,
+        period: periodFilter === 'all' ? undefined : periodFilter,
       }),
   })
 
@@ -54,21 +54,21 @@ export function RecordsClient() {
           <Select value={indicatorFilter} onValueChange={setIndicatorFilter}>
             <SelectTrigger className="h-8 w-44 text-xs"><SelectValue placeholder="Indicador" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               {indicators?.results.map((i) => <SelectItem key={i.id} value={String(i.id)}>{i.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={entityFilter} onValueChange={setEntityFilter}>
             <SelectTrigger className="h-8 w-40 text-xs"><SelectValue placeholder="Entidad" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas</SelectItem>
+              <SelectItem value="all">Todas</SelectItem>
               {entities?.results.map((e) => <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={periodFilter} onValueChange={setPeriodFilter}>
             <SelectTrigger className="h-8 w-36 text-xs"><SelectValue placeholder="Período" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               {periods?.results.map((p) => <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>)}
             </SelectContent>
           </Select>

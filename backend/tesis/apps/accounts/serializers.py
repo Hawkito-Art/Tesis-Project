@@ -57,15 +57,20 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name',
-            'email_verified', 'is_active', 'is_staff',
+            'email_verified', 'is_active', 'is_staff', 'role',
             'created_at', 'updated_at',
         ]
         read_only_fields = fields
+
+    def get_role(self, obj):
+        user_role = obj.user_roles.select_related('role').first()
+        return user_role.role.name if user_role else None
 
 
 class UserMeSerializer(serializers.ModelSerializer):

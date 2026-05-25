@@ -31,16 +31,16 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'outline'> = {
 export function BudgetListClient() {
   const router = useRouter()
   const [page, setPage] = useState(0)
-  const [entityFilter, setEntityFilter] = useState<string>('')
-  const [periodFilter, setPeriodFilter] = useState<string>('')
+  const [entityFilter, setEntityFilter] = useState<string>('all')
+  const [periodFilter, setPeriodFilter] = useState<string>('all')
 
   const { data, isLoading } = useQuery({
     queryKey: ['budgets', page, entityFilter, periodFilter],
     queryFn: () =>
       budgetsApi.list({
         page: page + 1,
-        entity: entityFilter || undefined,
-        period: periodFilter || undefined,
+        entity: entityFilter === 'all' ? undefined : entityFilter,
+        period: periodFilter === 'all' ? undefined : periodFilter,
       }),
   })
 
@@ -95,7 +95,7 @@ export function BudgetListClient() {
               <SelectValue placeholder="Filtrar por entidad" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas las entidades</SelectItem>
+              <SelectItem value="all">Todas las entidades</SelectItem>
               {entities?.results.map((e) => (
                 <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>
               ))}
@@ -106,7 +106,7 @@ export function BudgetListClient() {
               <SelectValue placeholder="Filtrar por período" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos los períodos</SelectItem>
+              <SelectItem value="all">Todos los períodos</SelectItem>
               {periods?.results.map((p) => (
                 <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>
               ))}

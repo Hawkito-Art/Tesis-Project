@@ -31,11 +31,11 @@ function RankBadge({ rank }: { rank: number }) {
 
 export function ClassificationsClient() {
   const [page, setPage] = useState(0)
-  const [periodFilter, setPeriodFilter] = useState('')
+  const [periodFilter, setPeriodFilter] = useState('all')
 
   const { data, isLoading } = useQuery({
     queryKey: ['classifications', page, periodFilter],
-    queryFn: () => classificationsApi.list({ page: page + 1, period: periodFilter || undefined }),
+    queryFn: () => classificationsApi.list({ page: page + 1, period: periodFilter === 'all' ? undefined : periodFilter }),
   })
 
   const { data: periods } = useQuery({ queryKey: ['periods'], queryFn: () => periodsApi.list() })
@@ -59,11 +59,11 @@ export function ClassificationsClient() {
           <Select value={periodFilter} onValueChange={setPeriodFilter}>
             <SelectTrigger className="h-8 w-40 text-xs"><SelectValue placeholder="Filtrar período" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               {periods?.results.map((p) => <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>)}
             </SelectContent>
           </Select>
-          <ExportButton endpoint="/reports/classifications/export/" filename="clasificaciones.xlsx" params={{ period: periodFilter || undefined }} />
+          <ExportButton endpoint="/reports/classifications/export/" filename="clasificaciones.xlsx" params={{ period: periodFilter === 'all' ? undefined : periodFilter }} />
         </div>
       </div>
 

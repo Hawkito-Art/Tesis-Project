@@ -25,8 +25,8 @@ export function UploadClient() {
   const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [importType, setImportType] = useState('')
-  const [entityId, setEntityId] = useState('')
-  const [periodId, setPeriodId] = useState('')
+  const [entityId, setEntityId] = useState('none')
+  const [periodId, setPeriodId] = useState('none')
   const [loading, setLoading] = useState(false)
 
   const { data: entities } = useQuery({ queryKey: ['entities', 0], queryFn: () => entitiesApi.list() })
@@ -43,8 +43,8 @@ export function UploadClient() {
       await ingestionApi.upload(
         file,
         importType,
-        entityId ? Number(entityId) : undefined,
-        periodId ? Number(periodId) : undefined,
+        entityId !== 'none' ? Number(entityId) : undefined,
+        periodId !== 'none' ? Number(periodId) : undefined,
       )
       toast.success('Archivo cargado correctamente. Puede seguir el progreso en Trabajos.')
       router.push('/dashboard/ingestion/jobs')
@@ -87,7 +87,7 @@ export function UploadClient() {
                 <SelectValue placeholder="Seleccionar" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Sin especificar</SelectItem>
+                <SelectItem value="none">Sin especificar</SelectItem>
                 {entities?.results.map((e) => (
                   <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>
                 ))}
@@ -101,7 +101,7 @@ export function UploadClient() {
                 <SelectValue placeholder="Seleccionar" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Sin especificar</SelectItem>
+                <SelectItem value="none">Sin especificar</SelectItem>
                 {periods?.results.map((p) => (
                   <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>
                 ))}
