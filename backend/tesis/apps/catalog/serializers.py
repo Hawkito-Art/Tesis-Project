@@ -81,11 +81,21 @@ class EntitySerializer(serializers.ModelSerializer):
 
 
 class PeriodSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = Period
-        fields = ['id', 'year', 'month', 'period_type', 'is_active', 'created_at']
+        fields = ['id', 'name', 'year', 'month', 'period_type', 'is_active', 'created_at']
         read_only_fields = ['created_at']
+
+    def get_name(self, obj):
+        month_names = {
+            1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril',
+            5: 'Mayo', 6: 'Junio', 7: 'Julio', 8: 'Agosto',
+            9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre',
+        }
+        month_name = month_names.get(obj.month, str(obj.month).zfill(2))
+        return f'{month_name} {obj.year} ({obj.period_type})'
 
     def validate_month(self, value):
         if not 1 <= value <= 12:

@@ -14,27 +14,32 @@ export interface User {
   email: string
   first_name: string
   last_name: string
-  role: string | null
-  entity: Entity | null
   is_active: boolean
+  is_staff: boolean
+  email_verified: boolean
+  created_at?: string
+  updated_at?: string
 }
 
-/** Write payload for create/update — sends FK IDs instead of nested objects */
 export interface UserPayload {
   email?: string
   first_name?: string
   last_name?: string
-  role?: number | null
-  entity?: number | null
+  password?: string
   is_active?: boolean
+  is_staff?: boolean
+  email_verified?: boolean
 }
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 export interface Entity {
   id: number
-  name: string
   code: string
+  name: string
+  type: string
   description?: string
+  is_consolidated: boolean
+  is_active: boolean
   created_at?: string
   updated_at?: string
 }
@@ -42,15 +47,19 @@ export interface Entity {
 export interface Period {
   id: number
   name: string
-  start_date: string
-  end_date: string
+  year: number
+  month: number
+  period_type: string
   is_active: boolean
+  created_at?: string
 }
 
 export interface Role {
   id: number
   name: string
-  permissions?: string[]
+  description?: string
+  is_active?: boolean
+  created_at?: string
 }
 
 // ─── Budget ───────────────────────────────────────────────────────────────────

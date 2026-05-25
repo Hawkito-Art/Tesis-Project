@@ -63,7 +63,7 @@ urlpatterns = [
     ),
     path(
         "api/periods/<int:pk>/",
-        PeriodViewSet.as_view({"get": "retrieve", "patch": "partial_update"}),
+        PeriodViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}),
         name="periods-detail",
     ),
     path("api/", include("apps.budget.urls")),

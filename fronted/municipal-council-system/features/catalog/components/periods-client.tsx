@@ -8,14 +8,17 @@ import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { format } from 'date-fns'
 
 import { periodsApi } from '@/features/catalog/api'
 import type { Period } from '@/lib/types'
 import { DataTable } from '@/components/shared/data-table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { FormField } from '@/components/shared/form-field'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog'
@@ -24,11 +27,26 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 
+const MONTHS = [
+  { value: 1, label: 'Enero' }, { value: 2, label: 'Febrero' },
+  { value: 3, label: 'Marzo' }, { value: 4, label: 'Abril' },
+  { value: 5, label: 'Mayo' }, { value: 6, label: 'Junio' },
+  { value: 7, label: 'Julio' }, { value: 8, label: 'Agosto' },
+  { value: 9, label: 'Septiembre' }, { value: 10, label: 'Octubre' },
+  { value: 11, label: 'Noviembre' }, { value: 12, label: 'Diciembre' },
+]
+
+const PERIOD_TYPES = [
+  { value: 'mensual', label: 'Mensual' },
+  { value: 'acumulado', label: 'Acumulado' },
+  { value: 'anual', label: 'Anual' },
+]
+
 const periodSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido'),
-  start_date: z.string().min(1, 'La fecha de inicio es requerida'),
-  end_date: z.string().min(1, 'La fecha de fin es requerida'),
-  is_active: z.boolean().default(false),
+  year: z.coerce.number().int().min(2000, 'Año mínimo 2000').max(2100, 'Año inválido'),
+  month: z.coerce.number().int().min(1).max(12),
+  period_type: z.string().min(1, 'El tipo es requerido'),
+  is_active: z.boolean().default(true),
 })
 type PeriodValues = z.infer<typeof periodSchema>
 
@@ -43,8 +61,9 @@ export function PeriodsClient() {
     queryFn: () => periodsApi.list(),
   })
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PeriodValues>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<PeriodValues>({
     resolver: zodResolver(periodSchema),
+    defaultValues: { year: new Date().getFullYear(), month: 1, period_type: 'mensual', is_active: true },
   })
 
   const createMutation = useMutation({
@@ -67,13 +86,13 @@ export function PeriodsClient() {
 
   function openCreate() {
     setEditTarget(null)
-    reset({ name: '', start_date: '', end_date: '', is_active: false })
+    reset({ year: new Date().getFullYear(), month: 1, period_type: 'mensual', is_active: true })
     setDialogOpen(true)
   }
 
   function openEdit(p: Period) {
     setEditTarget(p)
-    reset({ name: p.name, start_date: p.start_date, end_date: p.end_date, is_active: p.is_active })
+    reset({ year: p.year, month: p.month, period_type: p.period_type, is_active: p.is_active })
     setDialogOpen(true)
   }
 
@@ -82,10 +101,13 @@ export function PeriodsClient() {
     else await createMutation.mutateAsync(values)
   }
 
+  const typeLabels: Record<string, string> = { mensual: 'Mensual', acumulado: 'Acumulado', anual: 'Anual' }
+
   const columns: ColumnDef<Period>[] = [
-    { accessorKey: 'name', header: 'Nombre' },
-    { accessorKey: 'start_date', header: 'Inicio', cell: ({ row }) => format(new Date(row.original.start_date), 'dd/MM/yyyy') },
-    { accessorKey: 'end_date', header: 'Fin', cell: ({ row }) => format(new Date(row.original.end_date), 'dd/MM/yyyy') },
+    { accessorKey: 'name', header: 'Período' },
+    { accessorKey: 'year', header: 'Año' },
+    { accessorKey: 'month', header: 'Mes', cell: ({ row }) => MONTHS.find((m) => m.value === row.original.month)?.label ?? row.original.month },
+    { accessorKey: 'period_type', header: 'Tipo', cell: ({ row }) => <Badge variant="secondary">{typeLabels[row.original.period_type] ?? row.original.period_type}</Badge> },
     { accessorKey: 'is_active', header: 'Estado', cell: ({ row }) => (
       <Badge variant={row.original.is_active ? 'default' : 'secondary'}>
         {row.original.is_active ? 'Activo' : 'Inactivo'}
@@ -118,29 +140,36 @@ export function PeriodsClient() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader><DialogTitle>{editTarget ? 'Editar período' : 'Nuevo período'}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-            <FormField
-              label="Nombre"
-              id="name"
-              placeholder="Ej: 2024"
-              error={errors.name?.message}
-              {...register('name')}
-            />
             <div className="grid grid-cols-2 gap-3">
-              <FormField
-                label="Fecha inicio"
-                id="start_date"
-                type="date"
-                error={errors.start_date?.message}
-                {...register('start_date')}
-              />
-              <FormField
-                label="Fecha fin"
-                id="end_date"
-                type="date"
-                error={errors.end_date?.message}
-                {...register('end_date')}
-              />
+              <div className="space-y-1.5">
+                <Label htmlFor="year">Año</Label>
+                <Input id="year" type="number" min={2000} max={2100} {...register('year')} />
+                {errors.year && <p className="text-xs text-destructive">{errors.year.message}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label>Mes</Label>
+                <Select value={String(watch('month'))} onValueChange={(v) => setValue('month', Number(v))}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar mes" /></SelectTrigger>
+                  <SelectContent>
+                    {MONTHS.map((m) => <SelectItem key={m.value} value={String(m.value)}>{m.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+            <div className="space-y-1.5">
+              <Label>Tipo de período</Label>
+              <Select value={watch('period_type')} onValueChange={(v) => setValue('period_type', v)}>
+                <SelectTrigger><SelectValue placeholder="Seleccionar tipo" /></SelectTrigger>
+                <SelectContent>
+                  {PERIOD_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {errors.period_type && <p className="text-xs text-destructive">{errors.period_type.message}</p>}
+            </div>
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" {...register('is_active')} className="rounded border-border" />
+              Período activo
+            </label>
             <DialogFooter className="pt-2">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
               <Button type="submit" disabled={isSubmitting}>

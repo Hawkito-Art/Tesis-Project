@@ -1,7 +1,6 @@
 import apiClient from '@/lib/axios'
 import type { Entity, Period, Role, User, UserPayload, PaginatedResponse } from '@/lib/types'
 
-// ─── Entities ─────────────────────────────────────────────────────────────────
 export const entitiesApi = {
   list: (params?: Record<string, unknown>) =>
     apiClient.get<PaginatedResponse<Entity>>('/catalog/entities/', { params }).then((r) => r.data),
@@ -15,7 +14,6 @@ export const entitiesApi = {
     apiClient.delete(`/catalog/entities/${id}/`).then((r) => r.data),
 }
 
-// ─── Periods ──────────────────────────────────────────────────────────────────
 export const periodsApi = {
   list: (params?: Record<string, unknown>) =>
     apiClient.get<PaginatedResponse<Period>>('/catalog/periods/', { params }).then((r) => r.data),
@@ -29,28 +27,26 @@ export const periodsApi = {
     apiClient.delete(`/catalog/periods/${id}/`).then((r) => r.data),
 }
 
-// ─── Roles ────────────────────────────────────────────────────────────────────
 export const rolesApi = {
   list: () =>
-    apiClient.get<PaginatedResponse<Role>>('/catalog/roles/').then((r) => r.data),
+    apiClient.get<PaginatedResponse<Role>>('/roles/').then((r) => r.data),
   create: (data: Partial<Role>) =>
-    apiClient.post<Role>('/catalog/roles/', data).then((r) => r.data),
+    apiClient.post<Role>('/roles/', data).then((r) => r.data),
   update: (id: number, data: Partial<Role>) =>
-    apiClient.patch<Role>(`/catalog/roles/${id}/`, data).then((r) => r.data),
+    apiClient.patch<Role>(`/roles/${id}/`, data).then((r) => r.data),
   remove: (id: number) =>
-    apiClient.delete(`/catalog/roles/${id}/`).then((r) => r.data),
+    apiClient.delete(`/roles/${id}/`).then((r) => r.data),
 }
 
-// ─── Users ────────────────────────────────────────────────────────────────────
 export const usersApi = {
   list: (params?: Record<string, unknown>) =>
-    apiClient.get<PaginatedResponse<User>>('/catalog/users/', { params }).then((r) => r.data),
+    apiClient.get<PaginatedResponse<User>>('/users/', { params }).then((r) => r.data),
   get: (id: number) =>
-    apiClient.get<User>(`/catalog/users/${id}/`).then((r) => r.data),
+    apiClient.get<User>(`/users/${id}/`).then((r) => r.data),
   create: (data: UserPayload) =>
-    apiClient.post<User>('/catalog/users/', data).then((r) => r.data),
+    apiClient.post<User>('/users/', data).then((r) => r.data),
   update: (id: number, data: UserPayload) =>
-    apiClient.patch<User>(`/catalog/users/${id}/`, data).then((r) => r.data),
+    apiClient.patch<User>(`/users/${id}/`, data).then((r) => r.data),
   remove: (id: number) =>
-    apiClient.delete(`/catalog/users/${id}/`).then((r) => r.data),
+    apiClient.delete(`/users/${id}/`).then((r) => r.data),
 }

@@ -13,11 +13,18 @@ import { rolesApi } from '@/features/catalog/api'
 import type { Role } from '@/lib/types'
 import { DataTable } from '@/components/shared/data-table'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { FormField } from '@/components/shared/form-field'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
-const roleSchema = z.object({ name: z.string().min(1, 'El nombre es requerido') })
+const roleSchema = z.object({
+  name: z.string().min(1, 'El nombre es requerido'),
+  description: z.string().optional(),
+  is_active: z.boolean().default(true),
+})
 type RoleValues = z.infer<typeof roleSchema>
 
 export function RolesClient() {
@@ -28,7 +35,10 @@ export function RolesClient() {
 
   const { data, isLoading } = useQuery({ queryKey: ['roles'], queryFn: () => rolesApi.list() })
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<RoleValues>({ resolver: zodResolver(roleSchema) })
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<RoleValues>({
+    resolver: zodResolver(roleSchema),
+    defaultValues: { is_active: true },
+  })
 
   const createMutation = useMutation({
     mutationFn: (v: RoleValues) => rolesApi.create(v),
@@ -49,11 +59,24 @@ export function RolesClient() {
   const columns: ColumnDef<Role>[] = [
     { accessorKey: 'id', header: 'ID', size: 60 },
     { accessorKey: 'name', header: 'Nombre' },
+    { accessorKey: 'description', header: 'Descripción', cell: ({ row }) => row.original.description || '—' },
+    {
+      accessorKey: 'is_active', header: 'Estado',
+      cell: ({ row }) => (
+        <Badge variant={row.original.is_active ? 'default' : 'secondary'}>
+          {row.original.is_active ? 'Activo' : 'Inactivo'}
+        </Badge>
+      ),
+    },
     {
       id: 'actions', header: '', size: 80,
       cell: ({ row }) => (
         <div className="flex items-center gap-1 justify-end">
-          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setEditTarget(row.original); reset({ name: row.original.name }); setDialogOpen(true) }}><Pencil className="w-3.5 h-3.5" /></Button>
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
+            setEditTarget(row.original)
+            reset({ name: row.original.name, description: row.original.description ?? '', is_active: row.original.is_active ?? true })
+            setDialogOpen(true)
+          }}><Pencil className="w-3.5 h-3.5" /></Button>
           <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" onClick={() => setDeleteTarget(row.original)}><Trash2 className="w-3.5 h-3.5" /></Button>
         </div>
       ),
@@ -64,7 +87,7 @@ export function RolesClient() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div><h2 className="text-base font-semibold">Roles</h2><p className="text-xs text-muted-foreground">Roles del sistema</p></div>
-        <Button size="sm" onClick={() => { setEditTarget(null); reset({ name: '' }); setDialogOpen(true) }}><Plus className="w-4 h-4 mr-1.5" />Nuevo rol</Button>
+        <Button size="sm" onClick={() => { setEditTarget(null); reset({ name: '', description: '', is_active: true }); setDialogOpen(true) }}><Plus className="w-4 h-4 mr-1.5" />Nuevo rol</Button>
       </div>
 
       <DataTable columns={columns} data={data?.results ?? []} isLoading={isLoading} emptyMessage="No hay roles registrados." />
@@ -80,6 +103,14 @@ export function RolesClient() {
               error={errors.name?.message}
               {...register('name')}
             />
+            <div className="space-y-1.5">
+              <Label htmlFor="description">Descripción (opcional)</Label>
+              <Textarea id="description" placeholder="Descripción del rol" {...register('description')} />
+            </div>
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" {...register('is_active')} className="rounded border-border" />
+              Rol activo
+            </label>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}{editTarget ? 'Guardar' : 'Crear'}</Button>

@@ -22,6 +22,7 @@ class PeriodViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = Period.objects.all().order_by('-year', '-month', 'period_type', '-id')

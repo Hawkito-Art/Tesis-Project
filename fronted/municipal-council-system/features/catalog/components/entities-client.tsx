@@ -13,7 +13,12 @@ import { entitiesApi } from '@/features/catalog/api'
 import type { Entity } from '@/lib/types'
 import { DataTable } from '@/components/shared/data-table'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
 import { FormField } from '@/components/shared/form-field'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -33,10 +38,24 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Loader2 } from 'lucide-react'
 
+const ENTITY_TYPES = [
+  { value: 'consolidado', label: 'Consolidado' },
+  { value: 'empresa', label: 'Empresa' },
+  { value: 'mipyme', label: 'Mipyme' },
+  { value: 'unidad_presupuestada', label: 'Unidad presupuestada' },
+]
+
+const typeLabels: Record<string, string> = Object.fromEntries(
+  ENTITY_TYPES.map((t) => [t.value, t.label]),
+)
+
 const entitySchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido'),
   code: z.string().min(1, 'El código es requerido'),
+  name: z.string().min(1, 'El nombre es requerido'),
+  type: z.string().min(1, 'El tipo es requerido'),
   description: z.string().optional(),
+  is_consolidated: z.boolean().default(false),
+  is_active: z.boolean().default(true),
 })
 type EntityValues = z.infer<typeof entitySchema>
 
@@ -56,8 +75,15 @@ export function EntitiesClient() {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<EntityValues>({ resolver: zodResolver(entitySchema) })
+  } = useForm<EntityValues>({
+    resolver: zodResolver(entitySchema),
+    defaultValues: { type: 'empresa', is_consolidated: false, is_active: true },
+  })
+
+  const watchedType = watch('type')
 
   const createMutation = useMutation({
     mutationFn: (values: EntityValues) => entitiesApi.create(values),
@@ -95,13 +121,20 @@ export function EntitiesClient() {
 
   function openCreate() {
     setEditTarget(null)
-    reset({ name: '', code: '', description: '' })
+    reset({ code: '', name: '', type: 'empresa', description: '', is_consolidated: false, is_active: true })
     setDialogOpen(true)
   }
 
   function openEdit(entity: Entity) {
     setEditTarget(entity)
-    reset({ name: entity.name, code: entity.code, description: entity.description ?? '' })
+    reset({
+      code: entity.code,
+      name: entity.name,
+      type: entity.type,
+      description: entity.description ?? '',
+      is_consolidated: entity.is_consolidated,
+      is_active: entity.is_active,
+    })
     setDialogOpen(true)
   }
 
@@ -116,7 +149,19 @@ export function EntitiesClient() {
   const columns: ColumnDef<Entity>[] = [
     { accessorKey: 'code', header: 'Código', size: 100 },
     { accessorKey: 'name', header: 'Nombre' },
+    {
+      accessorKey: 'type', header: 'Tipo',
+      cell: ({ row }) => <Badge variant="outline">{typeLabels[row.original.type] ?? row.original.type}</Badge>,
+    },
     { accessorKey: 'description', header: 'Descripción', cell: ({ row }) => row.original.description || '—' },
+    {
+      accessorKey: 'is_active', header: 'Estado',
+      cell: ({ row }) => (
+        <Badge variant={row.original.is_active ? 'default' : 'secondary'}>
+          {row.original.is_active ? 'Activo' : 'Inactivo'}
+        </Badge>
+      ),
+    },
     {
       id: 'actions',
       header: '',
@@ -163,7 +208,6 @@ export function EntitiesClient() {
         emptyMessage="No hay entidades registradas."
       />
 
-      {/* Create / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) { setEditTarget(null); reset() } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -184,12 +228,38 @@ export function EntitiesClient() {
               error={errors.name?.message}
               {...register('name')}
             />
+            <div className="space-y-1.5">
+              <Label>Tipo de entidad</Label>
+              <Select value={watch('type')} onValueChange={(v) => setValue('type', v)}>
+                <SelectTrigger><SelectValue placeholder="Seleccionar tipo" /></SelectTrigger>
+                <SelectContent>
+                  {ENTITY_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {errors.type && <p className="text-xs text-destructive">{errors.type.message}</p>}
+            </div>
             <FormField
               label="Descripción (opcional)"
               id="description"
               placeholder="Descripción breve"
               {...register('description')}
             />
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                {...register('is_consolidated')}
+                className="rounded border-border"
+                disabled={watchedType !== 'consolidado'}
+              />
+              Entidad consolidada del municipio
+            </label>
+            {watchedType === 'consolidado' && !watch('is_consolidated') && (
+              <p className="text-xs text-amber-600">Las entidades consolidadas deben marcarse como tal.</p>
+            )}
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" {...register('is_active')} className="rounded border-border" />
+              Entidad activa
+            </label>
             <DialogFooter className="pt-2">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancelar
@@ -203,7 +273,6 @@ export function EntitiesClient() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

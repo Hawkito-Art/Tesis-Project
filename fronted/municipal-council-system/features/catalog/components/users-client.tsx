@@ -9,16 +9,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { usersApi, rolesApi, entitiesApi } from '@/features/catalog/api'
+import { usersApi } from '@/features/catalog/api'
 import type { User } from '@/lib/types'
 import { DataTable } from '@/components/shared/data-table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
 import { FormField } from '@/components/shared/form-field'
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
@@ -26,8 +22,8 @@ const userSchema = z.object({
   email: z.string().email('Correo inválido'),
   first_name: z.string().min(1, 'Requerido'),
   last_name: z.string().min(1, 'Requerido'),
-  role: z.coerce.number().optional(),
-  entity: z.coerce.number().optional(),
+  password: z.string().min(8, 'Mínimo 8 caracteres').optional().or(z.literal('')),
+  is_active: z.boolean().default(true),
 })
 type UserValues = z.infer<typeof userSchema>
 
@@ -39,18 +35,22 @@ export function UsersClient() {
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
 
   const { data, isLoading } = useQuery({ queryKey: ['users', page], queryFn: () => usersApi.list({ page: page + 1 }) })
-  const { data: rolesData } = useQuery({ queryKey: ['roles'], queryFn: () => rolesApi.list() })
-  const { data: entitiesData } = useQuery({ queryKey: ['entities', 0], queryFn: () => entitiesApi.list() })
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<UserValues>({ resolver: zodResolver(userSchema) })
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<UserValues>({
+    resolver: zodResolver(userSchema),
+    defaultValues: { is_active: true },
+  })
 
   const createMutation = useMutation({
-    mutationFn: (v: UserValues) => usersApi.create({ ...v, role: v.role ?? null, entity: v.entity ?? null }),
+    mutationFn: (v: UserValues) => usersApi.create({ ...v, password: v.password || undefined }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); toast.success('Usuario creado'); setDialogOpen(false); reset() },
     onError: () => toast.error('Error al crear el usuario'),
   })
   const updateMutation = useMutation({
-    mutationFn: ({ id, values }: { id: number; values: UserValues }) => usersApi.update(id, { ...values, role: values.role ?? null, entity: values.entity ?? null }),
+    mutationFn: ({ id, values }: { id: number; values: UserValues }) => {
+      const { password, ...rest } = values
+      return usersApi.update(id, rest)
+    },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); toast.success('Usuario actualizado'); setDialogOpen(false); setEditTarget(null); reset() },
     onError: () => toast.error('Error al actualizar el usuario'),
   })
@@ -62,21 +62,20 @@ export function UsersClient() {
 
   function openCreate() {
     setEditTarget(null)
-    reset({ email: '', first_name: '', last_name: '' })
+    reset({ email: '', first_name: '', last_name: '', password: '', is_active: true })
     setDialogOpen(true)
   }
 
   function openEdit(u: User) {
     setEditTarget(u)
-    reset({ email: u.email, first_name: u.first_name, last_name: u.last_name, role: u.role?.id, entity: u.entity?.id })
+    reset({ email: u.email, first_name: u.first_name, last_name: u.last_name, password: '', is_active: u.is_active })
     setDialogOpen(true)
   }
 
   const columns: ColumnDef<User>[] = [
     { accessorKey: 'email', header: 'Correo' },
     { accessorKey: 'first_name', header: 'Nombre', cell: ({ row }) => `${row.original.first_name} ${row.original.last_name}` },
-    { accessorKey: 'role', header: 'Rol', cell: ({ row }) => row.original.role?.name ?? '—' },
-    { accessorKey: 'entity', header: 'Entidad', cell: ({ row }) => row.original.entity?.name ?? '—' },
+    { accessorKey: 'is_staff', header: 'Staff', cell: ({ row }) => row.original.is_staff ? 'Sí' : 'No' },
     { accessorKey: 'is_active', header: 'Estado', cell: ({ row }) => <Badge variant={row.original.is_active ? 'default' : 'secondary'}>{row.original.is_active ? 'Activo' : 'Inactivo'}</Badge> },
     {
       id: 'actions', header: '', size: 80,
@@ -103,45 +102,17 @@ export function UsersClient() {
           <DialogHeader><DialogTitle>{editTarget ? 'Editar usuario' : 'Nuevo usuario'}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit(async (v) => { if (editTarget) await updateMutation.mutateAsync({ id: editTarget.id, values: v }); else await createMutation.mutateAsync(v) })} className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">
-              <FormField
-                label="Nombre"
-                id="first_name"
-                placeholder="Nombre"
-                error={errors.first_name?.message}
-                {...register('first_name')}
-              />
-              <FormField
-                label="Apellido"
-                id="last_name"
-                placeholder="Apellido"
-                error={errors.last_name?.message}
-                {...register('last_name')}
-              />
+              <FormField label="Nombre" id="first_name" placeholder="Nombre" error={errors.first_name?.message} {...register('first_name')} />
+              <FormField label="Apellido" id="last_name" placeholder="Apellido" error={errors.last_name?.message} {...register('last_name')} />
             </div>
-            <FormField
-              label="Correo electrónico"
-              id="user-email"
-              type="email"
-              placeholder="usuario@municipio.gob"
-              error={errors.email?.message}
-              {...register('email')}
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Rol</Label>
-                <Select value={String(watch('role') ?? '')} onValueChange={(v) => setValue('role', Number(v))}>
-                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                  <SelectContent>{rolesData?.results.map((r) => <SelectItem key={r.id} value={String(r.id)}>{r.name}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Entidad</Label>
-                <Select value={String(watch('entity') ?? '')} onValueChange={(v) => setValue('entity', Number(v))}>
-                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                  <SelectContent>{entitiesData?.results.map((e) => <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-            </div>
+            <FormField label="Correo electrónico" id="user-email" type="email" placeholder="usuario@municipio.gob" error={errors.email?.message} {...register('email')} />
+            {!editTarget && (
+              <FormField label="Contraseña" id="password" type="password" placeholder="Mínimo 8 caracteres" error={errors.password?.message} {...register('password')} />
+            )}
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" {...register('is_active')} className="rounded border-border" />
+              Usuario activo
+            </label>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}{editTarget ? 'Guardar' : 'Crear'}</Button>

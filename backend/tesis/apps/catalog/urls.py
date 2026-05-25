@@ -9,7 +9,7 @@ entity_detail = EntityViewSet.as_view(
     {'get': 'retrieve', 'patch': 'partial_update', 'delete': 'destroy'}
 )
 period_list = PeriodViewSet.as_view({'get': 'list', 'post': 'create'})
-period_detail = PeriodViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})
+period_detail = PeriodViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update', 'delete': 'destroy'})
 
 urlpatterns = [
     path('entities/', entity_list, name='entity-list'),
