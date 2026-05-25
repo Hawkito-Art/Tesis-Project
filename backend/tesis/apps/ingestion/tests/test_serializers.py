@@ -31,7 +31,7 @@ class DocumentUploadSerializerTestCase(TestCase):
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         )
         serializer = DocumentUploadSerializer(
-            data={'name': 'Carga abril', 'file': file_obj}
+            data={'name': 'Carga abril', 'file': file_obj, 'import_type': 'indicadores'}
         )
 
         self.assertTrue(serializer.is_valid(), serializer.errors)

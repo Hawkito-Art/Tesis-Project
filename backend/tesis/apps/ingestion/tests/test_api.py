@@ -24,6 +24,7 @@ class IngestionApiTestCase(APITestCase):
             email='regular-ingestion@test.com',
             password='Passw0rd!123',
         )
+        self.upload_data = {'name': 'Carga abril', 'import_type': 'indicadores'}
 
     def test_document_upload_requires_authentication(self):
         file_obj = SimpleUploadedFile(
@@ -33,7 +34,7 @@ class IngestionApiTestCase(APITestCase):
         )
         response = self.client.post(
             self.documents_url,
-            {'name': 'Carga abril', 'file': file_obj},
+            {**self.upload_data, 'file': file_obj},
             format='multipart',
         )
 
@@ -49,7 +50,7 @@ class IngestionApiTestCase(APITestCase):
 
         response = self.client.post(
             self.documents_url,
-            {'name': 'Carga abril', 'file': file_obj},
+            {**self.upload_data, 'file': file_obj},
             format='multipart',
         )
 
@@ -65,7 +66,7 @@ class IngestionApiTestCase(APITestCase):
 
         response = self.client.post(
             self.documents_url,
-            {'name': 'Carga abril', 'file': file_obj},
+            {**self.upload_data, 'file': file_obj},
             format='multipart',
         )
 
@@ -113,7 +114,7 @@ class IngestionApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         upload_response = self.client.post(
             self.documents_url,
-            {'name': 'Carga parcial', 'file': self._build_workbook_upload()},
+            {'name': 'Carga parcial', 'file': self._build_workbook_upload(), 'import_type': 'indicadores'},
             format='multipart',
         )
         self.assertEqual(upload_response.status_code, status.HTTP_201_CREATED)
@@ -165,7 +166,7 @@ class IngestionApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         upload_response = self.client.post(
             self.documents_url,
-            {'name': 'Carga parcial', 'file': self._build_workbook_upload()},
+            {'name': 'Carga parcial', 'file': self._build_workbook_upload(), 'import_type': 'indicadores'},
             format='multipart',
         )
         import_job_id = upload_response.data['import_job']['id']
@@ -189,7 +190,7 @@ class IngestionApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         upload_response = self.client.post(
             self.documents_url,
-            {'name': 'Carga paginada', 'file': self._build_workbook_upload()},
+            {'name': 'Carga paginada', 'file': self._build_workbook_upload(), 'import_type': 'indicadores'},
             format='multipart',
         )
         import_job_id = upload_response.data['import_job']['id']
@@ -218,7 +219,7 @@ class IngestionApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         upload_response = self.client.post(
             self.documents_url,
-            {'name': 'Carga upsert', 'file': self._build_workbook_upload()},
+            {'name': 'Carga upsert', 'file': self._build_workbook_upload(), 'import_type': 'indicadores'},
             format='multipart',
         )
         import_job_id = upload_response.data['import_job']['id']
@@ -256,7 +257,7 @@ class IngestionApiTestCase(APITestCase):
 
         second_upload = self.client.post(
             self.documents_url,
-            {'name': 'Carga upsert 2', 'file': second_file},
+            {'name': 'Carga upsert 2', 'file': second_file, 'import_type': 'indicadores'},
             format='multipart',
         )
         self.assertEqual(second_upload.status_code, status.HTTP_201_CREATED)

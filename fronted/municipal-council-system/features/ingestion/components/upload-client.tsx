@@ -14,23 +14,31 @@ import { Label } from '@/components/ui/label'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
+import type { Entity, Period } from '@/lib/types'
 
 const IMPORT_TYPES = [
-  { value: 'budget', label: 'Presupuesto' },
-  { value: 'indicators', label: 'Indicadores' },
-  { value: 'records', label: 'Registros de indicadores' },
+  { value: 'presupuesto', label: 'Presupuesto' },
+  { value: 'indicadores', label: 'Indicadores' },
+  { value: 'registros', label: 'Registros de indicadores' },
 ]
 
 export function UploadClient() {
   const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [importType, setImportType] = useState('')
-  const [entityId, setEntityId] = useState('none')
-  const [periodId, setPeriodId] = useState('none')
+  const [entityId, setEntityId] = useState('')
+  const [periodId, setPeriodId] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const { data: entities } = useQuery({ queryKey: ['entities', 0], queryFn: () => entitiesApi.list() })
-  const { data: periods } = useQuery({ queryKey: ['periods'], queryFn: () => periodsApi.list() })
+  const { data: entities } = useQuery({
+    queryKey: ['entities'],
+    queryFn: () => entitiesApi.list(),
+  })
+
+  const { data: periods } = useQuery({
+    queryKey: ['periods'],
+    queryFn: () => periodsApi.list(),
+  })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -40,13 +48,15 @@ export function UploadClient() {
     }
     setLoading(true)
     try {
+      const name = file.name.replace(/\.xlsx$/i, '')
       await ingestionApi.upload(
+        name,
         file,
         importType,
-        entityId !== 'none' ? Number(entityId) : undefined,
-        periodId !== 'none' ? Number(periodId) : undefined,
+        entityId ? Number(entityId) : undefined,
+        periodId ? Number(periodId) : undefined,
       )
-      toast.success('Archivo cargado correctamente. Puede seguir el progreso en Trabajos.')
+      toast.success('Archivo cargado correctamente.')
       router.push('/dashboard/ingestion/jobs')
     } catch {
       toast.error('Error al cargar el archivo. Verifique el formato e inténtelo nuevamente.')
@@ -81,28 +91,26 @@ export function UploadClient() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label>Entidad (opcional)</Label>
+            <Label>Entidad</Label>
             <Select value={entityId} onValueChange={setEntityId}>
               <SelectTrigger>
-                <SelectValue placeholder="Seleccionar" />
+                <SelectValue placeholder="Seleccionar entidad" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Sin especificar</SelectItem>
-                {entities?.results.map((e) => (
+                {entities?.results.map((e: Entity) => (
                   <SelectItem key={e.id} value={String(e.id)}>{e.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label>Período (opcional)</Label>
+            <Label>Período</Label>
             <Select value={periodId} onValueChange={setPeriodId}>
               <SelectTrigger>
-                <SelectValue placeholder="Seleccionar" />
+                <SelectValue placeholder="Seleccionar período" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Sin especificar</SelectItem>
-                {periods?.results.map((p) => (
+                {periods?.results.map((p: Period) => (
                   <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>
                 ))}
               </SelectContent>

@@ -5,9 +5,9 @@ from .models import Document, DocumentDetail, ImportJob
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'status', 'uploaded_by', 'created_at', 'updated_at')
+    list_display = ('name', 'import_type', 'status', 'uploaded_by', 'created_at', 'updated_at')
     search_fields = ('name', 'uploaded_by__email')
-    list_filter = ('status', 'created_at', 'updated_at')
+    list_filter = ('import_type', 'status', 'created_at', 'updated_at')
     ordering = ('-created_at',)
     readonly_fields = ('created_at', 'updated_at')
     autocomplete_fields = ('uploaded_by',)
@@ -18,6 +18,8 @@ class ImportJobAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'document',
+        'entity',
+        'period',
         'status',
         'total_rows',
         'processed_rows',
@@ -26,11 +28,11 @@ class ImportJobAdmin(admin.ModelAdmin):
         'finished_at',
         'created_at',
     )
-    search_fields = ('id', 'document__name')
-    list_filter = ('status', 'created_at', 'started_at', 'finished_at')
+    search_fields = ('id', 'document__name', 'entity__name', 'period__name')
+    list_filter = ('status', 'entity', 'period', 'created_at', 'started_at', 'finished_at')
     ordering = ('-created_at',)
     readonly_fields = ('created_at',)
-    autocomplete_fields = ('document',)
+    autocomplete_fields = ('document', 'entity', 'period')
 
 
 @admin.register(DocumentDetail)

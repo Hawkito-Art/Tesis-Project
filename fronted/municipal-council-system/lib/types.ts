@@ -83,18 +83,35 @@ export interface BudgetItem {
 }
 
 // ─── Ingestion ────────────────────────────────────────────────────────────────
-export type ImportJobStatus = 'pending' | 'processing' | 'completed' | 'error'
+export type ImportJobStatus = 'pendiente' | 'en_progreso' | 'completado' | 'error'
 
 export interface ImportJob {
   id: number
-  filename: string
-  import_type: string
+  document: number
+  document_name: string
+  document_import_type: string
+  entity: number | null
+  entity_detail: { id: number; code: string; name: string } | null
+  period: number | null
+  period_detail: { id: number; name: string; year: number; month: number } | null
   status: ImportJobStatus
+  total_rows: number
+  processed_rows: number
+  error_rows: number
+  error_log: string
+  started_at: string | null
+  finished_at: string | null
   created_at: string
-  updated_at: string
-  error_log?: string
-  entity?: Entity
-  period?: Period
+}
+
+export interface ImportJobDetail {
+  id: number
+  import_job: number
+  row_number: number
+  raw_data: Record<string, unknown>
+  is_valid: boolean
+  error_message: string
+  created_at: string
 }
 
 // ─── Indicators ───────────────────────────────────────────────────────────────
