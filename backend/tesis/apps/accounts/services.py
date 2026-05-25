@@ -20,8 +20,6 @@ LOGIN_ATTEMPTS_WINDOW_MINUTES = 30
 class AuthTokens:
     access: str
     refresh: str
-
-
 def _failed_attempts_queryset(email: str, ip_address: str) -> QuerySet[LoginAttempt]:
     since = timezone.now() - timezone.timedelta(minutes=LOGIN_ATTEMPTS_WINDOW_MINUTES)
     return LoginAttempt.objects.filter(

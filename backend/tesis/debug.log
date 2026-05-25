@@ -583,3 +583,94 @@ django.db.utils.OperationalError: no such table: reports_report
 2026-05-01 15:26:50,720 [WARNING] apps: Acceso denegado | usuario=analyst-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
 2026-05-01 15:26:53,280 [WARNING] apps: Acceso denegado | usuario=regular-reports@test.com | ip=127.0.0.1 | path=/api/reports/ | motivo=reports: se requiere rol admin para escritura/calculo
 2026-05-01 15:27:05,928 [WARNING] apps: Acceso denegado | usuario=regular-stats@test.com | ip=127.0.0.1 | path=/api/stats/ | motivo=reports: se requiere rol admin o analyst para lectura
+2026-05-20 10:39:03,627 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:39:33,962 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:39:35,520 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:39:46,770 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:41:20,841 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:41:34,175 [ERROR] django.request: Internal Server Error: /api/auth/login
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/auth/login/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+2026-05-20 10:49:13,232 [ERROR] django.request: Internal Server Error: /api/catalog/entities
+Traceback (most recent call last):
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+  File "/home/arturoa-dev/Desktop/Tesis Project/backend/venv/lib/python3.12/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/catalog/entities/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.

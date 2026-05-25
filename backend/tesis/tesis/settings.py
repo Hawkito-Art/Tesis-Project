@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'corsheaders',
     # Local apps
     'apps.accounts',
     'apps.catalog',
@@ -56,6 +57,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -149,6 +151,11 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'tesis.exceptions.custom_exception_handler',
 }
+
+# CORS
+# During development allow all origins; tighten in production using
+# CORS_ALLOWED_ORIGINS = ['https://example.com']
+CORS_ALLOW_ALL_ORIGINS = True
 
 from datetime import timedelta
 
