@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.db.models import Sum
 from rest_framework import serializers
 
 from apps.catalog.models import Entity, Period
@@ -91,6 +92,11 @@ class BudgetSerializer(serializers.ModelSerializer):
     items = BudgetItemSerializer(many=True, read_only=True)
     entity_code = serializers.CharField(source='entity.code', read_only=True)
     period_display = serializers.CharField(source='period.__str__', read_only=True)
+    total_amount = serializers.SerializerMethodField()
+
+    def get_total_amount(self, obj):
+        total = obj.items.filter(is_active=True).aggregate(total=Sum('planned_amount'))['total']
+        return float(total or 0)
 
     class Meta:
         model = Budget
@@ -102,6 +108,7 @@ class BudgetSerializer(serializers.ModelSerializer):
             'period_display',
             'description',
             'status',
+            'total_amount',
             'items',
             'is_active',
             'created_at',

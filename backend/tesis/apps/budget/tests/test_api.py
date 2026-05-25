@@ -10,7 +10,7 @@ User = get_user_model()
 
 class BudgetApiTestCase(APITestCase):
     def setUp(self):
-        self.budgets_url = "/api/budgets/"
+        self.budgets_url = "/api/budget/budgets/"
         self.admin_user = User.objects.create_user(
             email="admin-budget@test.com", password="Passw0rd!123", is_staff=True
         )
@@ -60,11 +60,11 @@ class BudgetApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
 
         patch_response = self.client.patch(
-            f"/api/budgets/{budget.id}/", {"description": "Ajustado"}, format="json"
+            f"/api/budget/budgets/{budget.id}/", {"description": "Ajustado"}, format="json"
         )
         self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
 
-        delete_response = self.client.delete(f"/api/budgets/{budget.id}/", format="json")
+        delete_response = self.client.delete(f"/api/budget/budgets/{budget.id}/", format="json")
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_budget_duplicate_entity_period_returns_400(self):
@@ -87,7 +87,7 @@ class BudgetApiTestCase(APITestCase):
         )
         self.client.force_authenticate(user=self.admin_user)
 
-        response = self.client.delete(f"/api/budgets/{budget.id}/", format="json")
+        response = self.client.delete(f"/api/budget/budgets/{budget.id}/", format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -129,7 +129,7 @@ class BudgetApiTestCase(APITestCase):
 
 class BudgetItemApiTestCase(APITestCase):
     def setUp(self):
-        self.items_url = "/api/budget-items/"
+        self.items_url = "/api/budget/budget-items/"
         self.admin_user = User.objects.create_user(
             email="admin-item@test.com", password="Passw0rd!123", is_staff=True
         )
@@ -177,13 +177,13 @@ class BudgetItemApiTestCase(APITestCase):
         item_id = create_response.data["id"]
 
         patch_response = self.client.patch(
-            f"/api/budget-items/{item_id}/",
+            f"/api/budget/budget-items/{item_id}/",
             {"name": "Ingreso 101 Ajustado"},
             format="json",
         )
         self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
 
-        delete_response = self.client.delete(f"/api/budget-items/{item_id}/", format="json")
+        delete_response = self.client.delete(f"/api/budget/budget-items/{item_id}/", format="json")
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_budget_item_duplicate_returns_400(self):
@@ -260,11 +260,11 @@ class BudgetItemApiTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
 
         patch_response = self.client.patch(
-            f"/api/budget-items/{item.id}/",
+            f"/api/budget/budget-items/{item.id}/",
             {"name": "No permitido"},
             format="json",
         )
         self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        delete_response = self.client.delete(f"/api/budget-items/{item.id}/", format="json")
+        delete_response = self.client.delete(f"/api/budget/budget-items/{item.id}/", format="json")
         self.assertEqual(delete_response.status_code, status.HTTP_400_BAD_REQUEST)

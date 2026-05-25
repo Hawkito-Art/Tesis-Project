@@ -48,8 +48,8 @@ export function BudgetListClient() {
   const { data: periods } = useQuery({ queryKey: ['periods'], queryFn: () => periodsApi.list() })
 
   const columns: ColumnDef<Budget>[] = [
-    { accessorKey: 'entity', header: 'Entidad', cell: ({ row }) => row.original.entity.name },
-    { accessorKey: 'period', header: 'Período', cell: ({ row }) => row.original.period.name },
+    { accessorKey: 'entity_code', header: 'Entidad' },
+    { accessorKey: 'period_display', header: 'Período' },
     {
       accessorKey: 'total_amount',
       header: 'Monto total',
