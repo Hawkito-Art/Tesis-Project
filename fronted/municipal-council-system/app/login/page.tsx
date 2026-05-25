@@ -1,11 +1,32 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { LoginForm } from '@/features/auth/components/login-form'
+import { useAuth } from '@/providers/auth-provider'
 import { Building2 } from 'lucide-react'
 
 export default function LoginPage() {
+  const { isLoading, isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/dashboard')
+    }
+  }, [isLoading, isAuthenticated, router])
+
+  if (isLoading) {
+    return null
+  }
+
+  if (isAuthenticated) {
+    return null
+  }
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-6">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary mb-4">
             <Building2 className="w-7 h-7 text-primary-foreground" />
@@ -18,7 +39,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Card */}
         <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
           <LoginForm />
         </div>

@@ -14,7 +14,7 @@ export interface User {
   email: string
   first_name: string
   last_name: string
-  role: Role | null
+  role: string | null
   entity: Entity | null
   is_active: boolean
 }

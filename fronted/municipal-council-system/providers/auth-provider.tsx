@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { apiClient, setAccessToken } from '@/lib/axios'
 import type { User, LoginCredentials } from '@/lib/types'
 
+const REFRESH_TOKEN_KEY = 'refresh_token'
+const COOKIE_NAME = 'is_logged_in'
+
 interface AuthContextValue {
   user: User | null
   isLoading: boolean
@@ -15,6 +18,15 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+function setLoggedInCookie() {
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()
+  document.cookie = `${COOKIE_NAME}=true; path=/; expires=${expires}; SameSite=Lax`
+}
+
+function clearLoggedInCookie() {
+  document.cookie = `${COOKIE_NAME}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -22,38 +34,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchMe = useCallback(async () => {
     try {
-      const { data } = await apiClient.get<User>('/accounts/me/')
+      const { data } = await apiClient.get<User>('/auth/me/')
       setUser(data)
     } catch {
       setUser(null)
     }
   }, [])
 
-  // On mount: attempt to refresh token (cookie-based), then fetch user
   useEffect(() => {
     const init = async () => {
       try {
-        // Development mode: skip real auth, use mock user
-        if (process.env.NODE_ENV === 'development') {
-          setUser({
-            id: 1,
-            email: 'admin@test.com',
-            first_name: 'Admin',
-            last_name: 'Usuario',
-            role: { id: 1, name: 'Administrator', permissions: [] },
-            entity: { id: 1, name: 'Municipalidad Central' },
-            is_active: true,
-          })
+        const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+        if (!refreshToken) {
           setIsLoading(false)
           return
         }
 
         const { data } = await apiClient.post<{ access: string }>(
-          '/accounts/token/refresh/',
+          '/auth/refresh/',
+          { refresh: refreshToken },
         )
         setAccessToken(data.access)
         await fetchMe()
       } catch {
+        localStorage.removeItem(REFRESH_TOKEN_KEY)
+        clearLoggedInCookie()
         setUser(null)
       } finally {
         setIsLoading(false)
@@ -64,15 +69,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {
-      // Development mode: skip real auth and go straight to dashboard
-      if (process.env.NODE_ENV === 'development') {
-        router.push('/dashboard')
-        return
-      }
       const { data } = await apiClient.post<{ access: string; refresh: string }>(
-        '/accounts/token/',
+        '/auth/login/',
         credentials,
       )
+      localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh)
+      setLoggedInCookie()
       setAccessToken(data.access)
       await fetchMe()
       router.push('/dashboard')
@@ -82,10 +84,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await apiClient.post('/accounts/logout/')
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+      if (refreshToken) {
+        await apiClient.post('/auth/logout/', { refresh: refreshToken })
+      }
     } catch {
       // ignore
     } finally {
+      localStorage.removeItem(REFRESH_TOKEN_KEY)
+      clearLoggedInCookie()
       setAccessToken(null)
       setUser(null)
       router.push('/login')

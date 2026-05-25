@@ -5,10 +5,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/a
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true,
+  withCredentials: false,
 })
 
-// In-memory access token store (set by AuthProvider)
 let _accessToken: string | null = null
 
 export function setAccessToken(token: string | null) {
@@ -19,7 +18,6 @@ export function getAccessToken() {
   return _accessToken
 }
 
-// Attach access token to every request
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (_accessToken) {
     config.headers.Authorization = `Bearer ${_accessToken}`
@@ -27,7 +25,6 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config
 })
 
-// Refresh token on 401
 let isRefreshing = false
 let failedQueue: Array<{
   resolve: (value: string) => void
@@ -65,10 +62,13 @@ apiClient.interceptors.response.use(
       isRefreshing = true
 
       try {
+        const refreshToken = localStorage.getItem('refresh_token')
+        if (!refreshToken) throw new Error('No refresh token')
+
         const { data } = await axios.post(
-          `${API_BASE_URL}/accounts/token/refresh/`,
-          {},
-          { withCredentials: true },
+          `${API_BASE_URL}/auth/refresh/`,
+          { refresh: refreshToken },
+          { withCredentials: false },
         )
         const newToken: string = data.access
         setAccessToken(newToken)
@@ -78,6 +78,8 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null)
         setAccessToken(null)
+        localStorage.removeItem('refresh_token')
+        document.cookie = 'is_logged_in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
         if (typeof window !== 'undefined') {
           window.location.href = '/login'
         }

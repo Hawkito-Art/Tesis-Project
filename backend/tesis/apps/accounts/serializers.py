@@ -69,14 +69,24 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class UserMeSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+    entity = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name',
-            'email_verified', 'created_at',
+            'email_verified', 'is_active', 'role', 'entity',
+            'created_at',
         ]
         read_only_fields = fields
+
+    def get_role(self, obj):
+        user_role = obj.user_roles.select_related('role').first()
+        return user_role.role.name if user_role else None
+
+    def get_entity(self, obj):
+        return None
 
 
 class LoginSerializer(serializers.Serializer):
