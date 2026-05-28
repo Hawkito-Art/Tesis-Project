@@ -27,11 +27,14 @@ def create_document_and_import_job(*, validated_data: dict[str, Any], uploaded_b
     document = Document.objects.create(
         name=validated_data['name'],
         file=validated_data['file'],
+        import_type=validated_data['import_type'],
         uploaded_by=uploaded_by,
         status='pendiente',
     )
     import_job = ImportJob.objects.create(
         document=document,
+        entity=validated_data.get('entity'),
+        period=validated_data.get('period'),
         status='pendiente',
     )
     return document, import_job
@@ -42,6 +45,10 @@ def process_import_job_partial(*, import_job: ImportJob) -> ImportJob:
     import_job.status = 'en_progreso'
     import_job.started_at = timezone.now()
     import_job.save(update_fields=['status', 'started_at'])
+
+    document = import_job.document
+    document.status = 'procesado'
+    document.save(update_fields=['status'])
 
     parsed_rows = parse_document_indicator_rows(document=import_job.document)
 

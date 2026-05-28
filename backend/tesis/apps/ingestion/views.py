@@ -9,6 +9,7 @@ from .serializers import (
     DocumentDetailSerializer,
     DocumentSerializer,
     DocumentUploadSerializer,
+    ImportJobListSerializer,
     ImportJobProcessSerializer,
     ImportJobSerializer,
 )
@@ -78,6 +79,66 @@ class ImportJobDetailContractAPIView(APIView):
                 'import_job': ImportJobSerializer(processed_job, context={'request': request}).data,
                 'upsert': upsert_stats,
             },
+            status=status.HTTP_200_OK,
+        )
+
+
+class ImportJobListContractAPIView(APIView):
+    permission_classes = [IsAuthenticated, IngestionPermission]
+
+    def get(self, request):
+        from .models import ImportJob
+
+        queryset = ImportJob.objects.select_related('document').order_by('-created_at')
+
+        page = self.paginator.paginate_queryset(queryset, request, view=self)
+        if page is not None:
+            serializer = ImportJobListSerializer(page, many=True, context={'request': request})
+            return self.paginator.get_paginated_response(serializer.data)
+
+        serializer = ImportJobListSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @property
+    def paginator(self):
+        if not hasattr(self, '_paginator'):
+            from rest_framework.settings import api_settings
+            pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+            self._paginator = pagination_class() if pagination_class else None
+        return self._paginator
+
+
+class ImportJobRetryContractAPIView(APIView):
+    permission_classes = [IsAuthenticated, IngestionPermission]
+
+    def post(self, request, pk: int):
+        from .models import DocumentDetail, ImportJob
+        from apps.indicators.models import IndicatorRecord
+
+        import_job = ImportJob.objects.select_related('document').filter(pk=pk).first()
+        if not import_job:
+            raise NotFound('ImportJob no encontrado.')
+
+        IndicatorRecord.objects.filter(import_job=import_job).delete()
+        DocumentDetail.objects.filter(import_job=import_job).delete()
+
+        import_job.status = 'pendiente'
+        import_job.total_rows = 0
+        import_job.processed_rows = 0
+        import_job.error_rows = 0
+        import_job.error_log = ''
+        import_job.started_at = None
+        import_job.finished_at = None
+        import_job.save(update_fields=[
+            'status', 'total_rows', 'processed_rows', 'error_rows',
+            'error_log', 'started_at', 'finished_at',
+        ])
+
+        import_job.document.status = 'pendiente'
+        import_job.document.save(update_fields=['status'])
+
+        return Response(
+            ImportJobSerializer(import_job, context={'request': request}).data,
             status=status.HTTP_200_OK,
         )
 

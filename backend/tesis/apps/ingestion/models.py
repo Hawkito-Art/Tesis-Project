@@ -3,6 +3,12 @@ from django.db import models
 
 
 class Document(models.Model):
+    IMPORT_TYPE_CHOICES = [
+        ('presupuesto', 'Presupuesto'),
+        ('indicadores', 'Indicadores'),
+        ('registros', 'Registros de indicadores'),
+    ]
+
     STATUS_CHOICES = [
         ('pendiente', 'Pendiente'),
         ('procesado', 'Procesado'),
@@ -11,6 +17,7 @@ class Document(models.Model):
 
     name = models.CharField(max_length=255)
     file = models.FileField(upload_to='documents/%Y/%m/')
+    import_type = models.CharField(max_length=20, choices=IMPORT_TYPE_CHOICES, default='indicadores')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendiente')
     uploaded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -41,6 +48,20 @@ class ImportJob(models.Model):
     document = models.ForeignKey(
         'ingestion.Document',
         on_delete=models.CASCADE,
+        related_name='import_jobs',
+    )
+    entity = models.ForeignKey(
+        'catalog.Entity',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='import_jobs',
+    )
+    period = models.ForeignKey(
+        'catalog.Period',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='import_jobs',
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendiente')

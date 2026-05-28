@@ -62,6 +62,20 @@ class CalculationExportXlsxSerializer(serializers.Serializer):
     )
 
 
+class CalculationListSerializer(serializers.ModelSerializer):
+    period_display = serializers.CharField(source='period.__str__', read_only=True)
+    executed_by_email = serializers.EmailField(source='executed_by.email', read_only=True)
+
+    class Meta:
+        model = Calculation
+        fields = [
+            'id', 'name', 'description', 'period', 'period_display',
+            'status', 'executed_by', 'executed_by_email',
+            'started_at', 'finished_at', 'created_at', 'updated_at',
+        ]
+        read_only_fields = fields
+
+
 class CalculationResultListQuerySerializer(serializers.Serializer):
     entity = serializers.PrimaryKeyRelatedField(
         queryset=Entity.objects.filter(is_active=True),

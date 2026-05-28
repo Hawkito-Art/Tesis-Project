@@ -1,11 +1,9 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { format } from 'date-fns'
-
 import { budgetsApi, budgetItemsApi } from '@/features/budget/api'
 import type { BudgetItem } from '@/lib/types'
 import { DataTable } from '@/components/shared/data-table'
@@ -13,18 +11,27 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 
-const fmt = (n: number) =>
-  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(n)
+const fmt = (n: number | string) =>
+  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(n))
 
 const STATUS_LABELS: Record<string, string> = { draft: 'Borrador', approved: 'Aprobado', closed: 'Cerrado' }
 const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'outline'> = { draft: 'secondary', approved: 'default', closed: 'outline' }
 
 export function BudgetDetailClient({ budgetId }: { budgetId: number }) {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const { data: budget, isLoading: loadingBudget } = useQuery({
     queryKey: ['budget', budgetId],
     queryFn: () => budgetsApi.get(budgetId),
+  })
+
+  const statusMutation = useMutation({
+    mutationFn: (status: string) => budgetsApi.update(budgetId, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['budget', budgetId] })
+      queryClient.invalidateQueries({ queryKey: ['budgets'] })
+    },
   })
 
   const { data: items, isLoading: loadingItems } = useQuery({
@@ -36,14 +43,17 @@ export function BudgetDetailClient({ budgetId }: { budgetId: number }) {
   const columns: ColumnDef<BudgetItem>[] = [
     { accessorKey: 'code', header: 'Código', size: 100 },
     { accessorKey: 'name', header: 'Nombre' },
-    { accessorKey: 'amount', header: 'Monto', cell: ({ row }) => fmt(row.original.amount) },
-    { accessorKey: 'executed', header: 'Ejecutado', cell: ({ row }) => fmt(row.original.executed) },
+    { accessorKey: 'item_type', header: 'Tipo', size: 90, cell: ({ row }) => row.original.item_type === 'ingreso' ? 'Ingreso' : 'Gasto' },
+    { accessorKey: 'planned_amount', header: 'Monto planificado', cell: ({ row }) => fmt(row.original.planned_amount) },
+    { accessorKey: 'actual_amount', header: 'Monto real', cell: ({ row }) => fmt(row.original.actual_amount) },
     {
-      accessorKey: 'percentage',
+      id: 'percentage',
       header: 'Ejecución',
       cell: ({ row }) => {
-        const pct = row.original.amount > 0
-          ? ((row.original.executed / row.original.amount) * 100).toFixed(1)
+        const planned = Number(row.original.planned_amount)
+        const actual = Number(row.original.actual_amount)
+        const pct = planned > 0
+          ? ((actual / planned) * 100).toFixed(1)
           : '0.0'
         const numPct = parseFloat(pct)
         return (
@@ -85,11 +95,11 @@ export function BudgetDetailClient({ budgetId }: { budgetId: number }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-xs text-muted-foreground">Entidad</p>
-              <p className="text-sm font-semibold mt-0.5">{budget.entity.name}</p>
+              <p className="text-sm font-semibold mt-0.5">{budget.entity_code}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Período</p>
-              <p className="text-sm font-semibold mt-0.5">{budget.period.name}</p>
+              <p className="text-sm font-semibold mt-0.5">{budget.period_display}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Monto total</p>
@@ -97,10 +107,32 @@ export function BudgetDetailClient({ budgetId }: { budgetId: number }) {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Estado</p>
-              <div className="mt-0.5">
+              <div className="flex items-center gap-2 mt-0.5">
                 <Badge variant={STATUS_VARIANTS[budget.status] ?? 'secondary'}>
                   {STATUS_LABELS[budget.status] ?? budget.status}
                 </Badge>
+                {budget.status === 'draft' && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-xs"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate('approved')}
+                  >
+                    Aprobar
+                  </Button>
+                )}
+                {budget.status === 'approved' && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-xs"
+                    disabled={statusMutation.isPending}
+                    onClick={() => statusMutation.mutate('closed')}
+                  >
+                    Cerrar
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -116,6 +148,18 @@ export function BudgetDetailClient({ budgetId }: { budgetId: number }) {
           isLoading={loadingItems}
           emptyMessage="No hay partidas para este presupuesto."
         />
+        {items && items.results.length > 0 && (
+          <div className="flex justify-end gap-6 mt-3 pt-3 border-t border-border text-sm">
+            <div>
+              <span className="text-muted-foreground">Total planificado: </span>
+              <span className="font-semibold">{fmt(items.results.reduce((s, i) => s + Number(i.planned_amount), 0))}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Total real: </span>
+              <span className="font-semibold">{fmt(items.results.reduce((s, i) => s + Number(i.actual_amount), 0))}</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
