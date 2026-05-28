@@ -65,21 +65,31 @@ export interface Role {
 // ─── Budget ───────────────────────────────────────────────────────────────────
 export interface Budget {
   id: number
-  entity: Entity
-  period: Period
-  total_amount: number
+  entity: number
+  period: number
+  entity_code: string
+  period_display: string
+  description: string
   status: string
+  total_amount: number
+  items: BudgetItem[]
+  is_active: boolean
+  created_by: number | null
   created_at: string
+  updated_at: string
 }
 
 export interface BudgetItem {
   id: number
   budget: number
+  item_type: string
   code: string
   name: string
-  amount: number
-  executed: number
-  percentage?: number
+  planned_amount: string
+  actual_amount: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 // ─── Ingestion ────────────────────────────────────────────────────────────────
@@ -207,26 +217,49 @@ export interface CalculationResult {
 // ─── Reports ──────────────────────────────────────────────────────────────────
 export interface Report {
   id: number
-  title: string
-  description: string
-  entity?: Entity
-  period?: Period
+  entity: number
+  period: number
+  entity_code: string
+  period_display: string
+  report_type: string
+  status: string
+  summary: Record<string, unknown>
+  detail: Record<string, unknown>
+  metadata: Record<string, unknown>
+  generated_by: number | null
+  generated_by_email: string | null
+  generated_at: string
   created_at: string
-}
-
-export interface Stat {
-  label: string
-  value: number | string
-  change?: number
+  updated_at: string
 }
 
 export interface Classification {
   id: number
-  entity: Entity
-  period: Period
-  category: string
-  score: number
-  rank: number
+  entity: number
+  period: number
+  entity_code: string
+  period_display: string
+  classification_type: string
+  value: string
+  description: string
+  rule_version: string
+  criteria_snapshot: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface StatsPayload {
+  filters_applied: Record<string, unknown>
+  totals: {
+    indicator_records: number
+    calculation_results: number
+    distinct_indicators: number
+    distinct_entities: number
+  }
+  records_by_source: Record<string, number>
+  records_by_indicator: Record<string, number>
+  average_value_by_indicator: Record<string, number>
+  latest_calculation: Record<string, unknown> | null
 }
 
 // ─── Shared ───────────────────────────────────────────────────────────────────

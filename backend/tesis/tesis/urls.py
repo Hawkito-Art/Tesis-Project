@@ -66,7 +66,7 @@ urlpatterns = [
         PeriodViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}),
         name="periods-detail",
     ),
-    path("api/", include("apps.budget.urls")),
+    path("api/budget/", include("apps.budget.urls")),
     path("api/indicators/", include("apps.indicators.urls")),
     path("api/ingestion/", include("apps.ingestion.urls")),
     path("api/calculations/", include("apps.calculations.urls")),

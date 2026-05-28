@@ -16,6 +16,7 @@ const ROUTE_TITLES: Record<string, string> = {
   '/dashboard/indicators': 'Indicadores',
   '/dashboard/indicators/variables': 'Variables',
   '/dashboard/indicators/records': 'Registros de indicadores',
+  '/dashboard/calculations': 'Cálculos',
   '/dashboard/calculations/run': 'Ejecutar cálculo',
   '/dashboard/calculations/results': 'Resultados de cálculos',
   '/dashboard/reports': 'Reportes',
